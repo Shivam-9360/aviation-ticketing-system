@@ -1,5 +1,6 @@
 package com.flight.booking.user.entity;
 
+import com.flight.booking.user.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.stereotype.Component;
@@ -18,15 +19,23 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private String password;
-    private String role;
+
+    @Column(nullable = false)
+    private Role role;
 
     @PrePersist
     public void setDefaultRole() {
         if (this.role == null) {
-            this.role = "User"; // Default role
+            this.role = Role.valueOf("User"); // Default role
         }
     }
 
