@@ -1,0 +1,9 @@
+server:
+  port: 9003
+spring:
+  application:
+  name: "flight-service"
+  data:
+    mongodb:
+      uri: "mongodb+srv://shivam:haZUTQy7X8JxJGsu@ticketing-system.btfz7.mongodb.net/?retryWrites=true&w=majority&appName=Ticketing-System"
+      database: "ticketing-system"
