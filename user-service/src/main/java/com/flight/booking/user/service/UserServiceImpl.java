@@ -5,14 +5,16 @@ import com.flight.booking.user.exception.NoUsersFoundException;
 import com.flight.booking.user.exception.UserAlreadyExistsException;
 import com.flight.booking.user.exception.UserNotFoundException;
 import com.flight.booking.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public User createUser(User user) {
@@ -41,10 +43,10 @@ public class UserServiceImpl implements UserService{
         User existingUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserNotFoundException("Cannot update. User not found with ID: " + user.getId()));
 
-        if (user.getName() != null) existingUser.setName(user.getName());
-        if (user.getEmail() != null) existingUser.setEmail(user.getEmail());
-        if (user.getPassword() != null) existingUser.setPassword(user.getPassword());
-        if (user.getRole() != null) existingUser.setRole(user.getRole());
+        existingUser.setName(user.getName());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setPassword(user.getPassword());
+        existingUser.setRole(user.getRole());
 
         return userRepository.save(existingUser);
     }
