@@ -1,6 +1,39 @@
 spring:
   application:
     name: "api-gateway"
+  cloud:
+    gateway:
+      routes:
+        - id: airport-service
+          uri: lb://airport-service
+          predicates:
+            - Path=/airport-service/**
+          filters:
+            - StripPrefix=1
+
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth-service/**
+          filters:
+            - StripPrefix=1
+
+        - id: flight-service
+          uri: lb://flight-service
+          predicates:
+            - Path=/flight-service/**
+          filters:
+            - StripPrefix=1
+
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/user-service/**
+          filters:
+            - StripPrefix=1
+
+server:
+  port: 8080
 
 eureka:
   client:
