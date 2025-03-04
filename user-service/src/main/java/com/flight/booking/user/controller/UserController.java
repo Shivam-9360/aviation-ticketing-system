@@ -1,12 +1,10 @@
 package com.flight.booking.user.controller;
 
+import com.flight.booking.user.dto.DTO;
 import com.flight.booking.user.dto.UserRequest;
 import com.flight.booking.user.dto.UserResponse;
-import com.flight.booking.user.entity.User;
 import com.flight.booking.user.service.UserService;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,38 +18,62 @@ public class UserController {
     private final UserService service;
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
+    public ResponseEntity<DTO<List<UserResponse>>> getAllUsers() {
         List<UserResponse> users = service.getAllUsers();
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(DTO.<List<UserResponse>>builder()
+                .success(true)
+                .message("Users Fetched Successfully")
+                .data(users)
+                .build());
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable int id){
+    public ResponseEntity<DTO<UserResponse>> getUserById(@PathVariable int id){
         UserResponse user =  service.getUserById(id);
-        return  ResponseEntity.ok(user);
+        return  ResponseEntity.ok(DTO.<UserResponse>builder()
+                .success(true)
+                .message("User Fetched Successfully")
+                .data(user)
+                .build());
     }
 
     @PostMapping("/user")
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest user) {
+    public ResponseEntity<DTO<UserResponse>> createUser(@RequestBody UserRequest user) {
         UserResponse createdUser = service.createUser(user);
-        return ResponseEntity.status(201).body(createdUser);
+        return ResponseEntity.status(201).body(DTO.<UserResponse>builder()
+                .success(true)
+                .message("User Created Successfully !")
+                .data(createdUser)
+                .build());
     }
 
     @PutMapping("/user")
-    public ResponseEntity<UserResponse> updateUser(@RequestBody UserRequest user){
+    public ResponseEntity<DTO<UserResponse>> updateUser(@RequestBody UserRequest user){
         UserResponse updateUser = service.updateUser(user);
-        return ResponseEntity.status(201).body(updateUser);
+        return ResponseEntity.status(201).body(DTO.<UserResponse>builder()
+                .success(true)
+                .message("User Created Successfully !")
+                .data(updateUser)
+                .build());
     }
 
     @DeleteMapping("/user/{id}")
-    private ResponseEntity<String> deleteUserById(@PathVariable int id){
+    private ResponseEntity<DTO<String>> deleteUserById(@PathVariable int id){
         service.deleteUserById(id);
-        return ResponseEntity.ok("User Deleted");
+        return ResponseEntity.ok(DTO.<String>builder()
+                .success(true)
+                .message("User Deleted Successfully")
+                .data(null)
+                .build());
     }
 
     @DeleteMapping("/users")
-    private ResponseEntity<String> deleteAllUsers(){
+    private ResponseEntity<DTO<String>> deleteAllUsers(){
         service.deleteAllUsers();
-        return ResponseEntity.ok("All Users Deleted");
+        return ResponseEntity.ok(DTO.<String>builder()
+                .success(true)
+                .message("All Users Deleted Successfully")
+                .data(null)
+                .build());
     }
 }
