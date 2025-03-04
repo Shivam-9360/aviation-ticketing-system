@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @ToString
 @Entity
 @Table(name = "airport")
+@Builder
 public class Airport{
 
     @Id

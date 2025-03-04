@@ -1,8 +1,9 @@
 package com.flight.booking.airport.controller;
 
-import com.flight.booking.airport.entity.Airport;
+import com.flight.booking.airport.dto.AirportRequest;
+import com.flight.booking.airport.dto.AirportResponse;
 import com.flight.booking.airport.service.AirportService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,31 +11,32 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class AirportController {
-    @Autowired
-    private AirportService service;
+
+    private final AirportService service;
 
     @GetMapping("/airports")
-    public ResponseEntity<List<Airport>> getAllAirports() {
-        List<Airport> airports = service.getAllAirports();
+    public ResponseEntity<List<AirportResponse>> getAllAirports() {
+        List<AirportResponse> airports = service.getAllAirports();
         return ResponseEntity.ok(airports);
     }
 
     @GetMapping("/airport/{id}")
-    public ResponseEntity<Airport> getUserById(@PathVariable int id){
-        Airport airport =  service.getAirportById(id);
+    public ResponseEntity<AirportResponse> getUserById(@PathVariable int id){
+        AirportResponse airport =  service.getAirportById(id);
         return  ResponseEntity.ok(airport);
     }
 
     @PostMapping("/airport")
-    public ResponseEntity<Airport> createUser(@RequestBody Airport airport) {
-        Airport createdAirport = service.createAirport(airport);
+    public ResponseEntity<AirportResponse> createUser(@RequestBody AirportRequest airport) {
+        AirportResponse createdAirport = service.createAirport(airport);
         return ResponseEntity.status(201).body(createdAirport);
     }
 
     @PutMapping("/airport")
-    public ResponseEntity<Airport> updateUser(@RequestBody Airport airport){
-        Airport updateUser = service.updateAirport(airport);
+    public ResponseEntity<AirportResponse> updateUser(@RequestBody AirportRequest airport){
+        AirportResponse updateUser = service.updateAirport(airport);
         return ResponseEntity.status(201).body(updateUser);
     }
 
