@@ -14,9 +14,8 @@ import java.util.List;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService service;
-
+    // findByEmail() required
     @GetMapping("/users")
     public ResponseEntity<DTO<List<UserResponse>>> getAllUsers() {
         List<UserResponse> users = service.getAllUsers();
