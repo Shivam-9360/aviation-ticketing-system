@@ -1,14 +1,16 @@
 package com.flight.booking.user.service;
 
+import com.flight.booking.user.dto.UserRequest;
+import com.flight.booking.user.dto.UserResponse;
 import com.flight.booking.user.entity.User;
 
 import java.util.List;
 
 public interface UserService {
-    User createUser(User user);
-    User getUserById(int userId);
-    List<User> getAllUsers();
-    User updateUser(User user);
+    UserResponse createUser(UserRequest user);
+    UserResponse getUserById(int userId);
+    List<UserResponse> getAllUsers();
+    UserResponse updateUser(UserRequest user);
     void deleteUserById(int userId);
     void deleteAllUsers();
 }
