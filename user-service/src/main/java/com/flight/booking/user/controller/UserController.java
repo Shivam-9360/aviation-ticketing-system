@@ -15,7 +15,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService service;
-    // findByEmail() required
+
+    @GetMapping("/user/email/{email}")
+    public ResponseEntity<DTO<UserResponse>> getUserByEmail(@PathVariable String email){
+        UserResponse user = service.getUserByEmail(email);
+        return ResponseEntity.ok(DTO.<UserResponse>builder()
+                .success(true)
+                .message("User found !")
+                .data(user)
+                .build());
+    }
+
     @GetMapping("/users")
     public ResponseEntity<DTO<List<UserResponse>>> getAllUsers() {
         List<UserResponse> users = service.getAllUsers();

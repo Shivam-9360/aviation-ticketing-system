@@ -15,6 +15,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .name(user.getName())
                 .role(user.getRole())
+                .password(user.getPassword())
                 .build();
     }
     public User mapToModel(UserRequest user){

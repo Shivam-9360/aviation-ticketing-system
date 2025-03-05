@@ -1,5 +1,6 @@
 package com.flight.booking.auth.entity;
 
+import com.flight.booking.auth.dto.UserResponse;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +15,7 @@ public class UserDetailsImpl implements UserDetails {
     private final String password;
     private final List<GrantedAuthority> authorities;
 
-    public UserDetailsImpl(User user) {
+    public UserDetailsImpl(UserResponse user) {
         email = user.getEmail();
         password = user.getPassword();
         authorities = List.of(new SimpleGrantedAuthority(user.getRole()));

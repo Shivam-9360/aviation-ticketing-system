@@ -1,16 +1,18 @@
-package com.flight.booking.user.dto;
+package com.flight.booking.airport.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DTO<T> {
-    private boolean success;
+@Builder
+public class DTO <T>{
     private String message;
-    private T data;
+    private boolean success;
+    T data;
 }

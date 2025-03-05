@@ -1,4 +1,4 @@
-package com.flight.booking.user.dto;
+package com.flight.booking.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DTO<T> {
-    private boolean success;
-    private String message;
-    private T data;
+public class UserRequest {
+    String email;
+    int id;
+    String name;
+    String role;
+    String password;
 }

@@ -30,6 +30,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public UserResponse getUserByEmail(String emailId) {
+        User exisitingUser =  userRepository.findByEmail(emailId)
+                .orElseThrow(()-> new UserNotFoundException("User with Email " + emailId + " not found."));
+        return userMapper.mapToDTO(exisitingUser);
+    }
+
+    @Override
     public UserResponse getUserById(int userId) {
         return userMapper.mapToDTO(userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User with Id " + userId + " not found.")));
     }

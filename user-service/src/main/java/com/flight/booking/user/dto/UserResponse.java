@@ -11,8 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResponse {
-    String email;
-    int id;
-    String name;
-    Role role;
+    private String email;
+    private int id;
+    private String name;
+    private Role role;
+    private String password;
 }
