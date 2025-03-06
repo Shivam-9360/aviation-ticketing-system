@@ -21,6 +21,6 @@ public class Flight {
     private int flightNumber;
     private String company;
     private int totalSeats;
-    @DBRef(lazy = true)
+    private int bookedSeats;
     private List<Seat> seats;
 }

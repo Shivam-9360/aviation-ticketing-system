@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class FlightMapper {
-    private final SeatMapper seatMapper;
+
 
     public FlightResponse mapToDTO(Flight flight) {
         return FlightResponse.builder()
@@ -20,9 +20,7 @@ public class FlightMapper {
                 .flightNumber(flight.getFlightNumber())
                 .company(flight.getCompany())
                 .totalSeats(flight.getTotalSeats())
-                .seats(flight.getSeats() != null
-                        ? flight.getSeats().stream().map(seatMapper::mapToDTO).collect(Collectors.toList())
-                        : Collections.emptyList())
+                .seats(flight.getSeats())
                 .build();
     }
 

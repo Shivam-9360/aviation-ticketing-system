@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SeatRequest {
-    private String seatId;
-    private int seatNumber;
-    private String type;
+@Builder
+public class DTO <T>{
+    private String message;
+    private boolean success;
+    T data;
 }
