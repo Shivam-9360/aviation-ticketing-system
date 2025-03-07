@@ -3,11 +3,13 @@ package com.flight.booking.flight.service;
 import com.flight.booking.flight.dto.FlightRequest;
 import com.flight.booking.flight.dto.FlightResponse;
 import com.flight.booking.flight.exception.FlightNotFoundException;
+import com.flight.booking.flight.feignClient.ScheduleServiceCommunicator;
 import com.flight.booking.flight.mapper.FlightMapper;
 import com.flight.booking.flight.model.Flight;
 import com.flight.booking.flight.model.Seat;
 import com.flight.booking.flight.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +21,9 @@ import java.util.stream.Collectors;
 public class FlightServiceImpl implements FlightService {
     private final FlightRepository flightRepository;
     private final FlightMapper flightMapper;
+
+    @Autowired
+    private ScheduleServiceCommunicator scheduleServiceCommunicator;
 
     public FlightResponse createFlight(FlightRequest flightRequest) {
         Flight flight = flightMapper.mapToModel(flightRequest);
@@ -64,9 +69,11 @@ public class FlightServiceImpl implements FlightService {
 
     public void deleteFlightById(String flightId) {
         flightRepository.deleteById(flightId);
+        scheduleServiceCommunicator.deleteScheduleByFlightId((flightId));
     }
 
     public void deleteAllFlights() {
         flightRepository.deleteAll();
+        scheduleServiceCommunicator.deleteAllSchedules();
     }
 }
