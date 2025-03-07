@@ -1,4 +1,4 @@
-package com.flight.booking.auth.config;
+package com.flight.booking.auth.feign;
 
 import com.flight.booking.auth.dto.DTO;
 import com.flight.booking.auth.dto.UserRequest;
