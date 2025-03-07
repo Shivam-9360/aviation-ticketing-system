@@ -15,6 +15,15 @@ The project consists of the following microservices:
 5. **API Gateway**: Acts as a single entry point for all client requests.
 6. **Eureka Server**: Service registry for service discovery.
 
+The Project Microservices are running on following ports:
+1. **User Service**: 9000
+2. **Airport Service**: 9001
+3. **Auth Service**: 9002
+4. **Flight Service**: 9003
+5. **Schedule-Service**: 9004
+6. **API Gateway**: 8080
+7. **Eureka Server**: 8761
+
 ## Technologies Used
 
 - **Spring Boot**: For building microservices.
