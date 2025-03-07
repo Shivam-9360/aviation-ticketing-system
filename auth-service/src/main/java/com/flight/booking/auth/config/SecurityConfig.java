@@ -1,6 +1,7 @@
 package com.flight.booking.auth.config;
 
 import com.flight.booking.auth.service.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,13 +22,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-
-    public final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
-    public SecurityConfig(CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
-        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
-    }
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public UserDetailsService userDetailsService() {

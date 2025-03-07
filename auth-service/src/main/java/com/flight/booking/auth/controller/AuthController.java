@@ -1,29 +1,25 @@
 package com.flight.booking.auth.controller;
 
-import com.flight.booking.auth.config.UserServiceCommunication;
+import com.flight.booking.auth.feign.UserServiceCommunication;
 import com.flight.booking.auth.dto.*;
 import com.flight.booking.auth.exception.CredentialsNotValidException;
 import com.flight.booking.auth.service.JwtService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
 public class AuthController {
-
     private final AuthenticationManager authenticationManager;
     private final UserServiceCommunication communicator;
     private final JwtService jwtService;
@@ -43,7 +39,6 @@ public class AuthController {
                                     .email(user.getData().getEmail())
                                     .name(user.getData().getName())
                                     .role(user.getData().getRole())
-                                    .token(token)
                                     .build())
                             .build());
         } else {
@@ -52,7 +47,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<DTO<AuthResponse>> registerAndGetToken(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<DTO<AuthResponse>> registerAndGetToken(@RequestBody UserRequest userRequest) throws NoSuchAlgorithmException, InvalidKeySpecException {
         userRequest.setPassword(new BCryptPasswordEncoder().encode(userRequest.getPassword()));
         DTO<UserResponse> userResponse = communicator.createUser(userRequest);
 
@@ -64,10 +59,9 @@ public class AuthController {
                             .success(true)
                             .message("Registered Successfully")
                             .data(AuthResponse.builder()
-                                    .email(userResponse.getData().getEmail())
-                                    .name(userResponse.getData().getEmail())
+                                    .email(userResponse.getData().getName())
+                                    .name(userResponse.getData().getName())
                                     .role(userResponse.getData().getRole())
-                                    .token(jwtService.generateToken(userResponse.getData().getEmail()))
                                     .build())
                             .build());
         } else {
