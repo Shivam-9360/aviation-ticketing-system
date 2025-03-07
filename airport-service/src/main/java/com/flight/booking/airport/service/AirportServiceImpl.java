@@ -5,9 +5,11 @@ import com.flight.booking.airport.dto.AirportResponse;
 import com.flight.booking.airport.entity.Airport;
 import com.flight.booking.airport.exception.AirportDoesntExistException;
 import com.flight.booking.airport.exception.AirportAlreadyExistsException;
+import com.flight.booking.airport.feignClient.ScheduleServiceCommunicator;
 import com.flight.booking.airport.mapper.AirportMapper;
 import com.flight.booking.airport.repository.AirportRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +21,10 @@ public class AirportServiceImpl implements AirportService{
 
     private final AirportRepository repo;
 private final AirportMapper airportMapper;
+
+@Autowired
+private ScheduleServiceCommunicator scheduleServiceCommunicator;
+
     @Override
     public List<AirportResponse> getAllAirports() {
         List<Airport> airports = repo.findAll();
@@ -40,6 +46,7 @@ private final AirportMapper airportMapper;
             throw new AirportDoesntExistException("Airport with Name " + id + " already exists");
         }
         repo.deleteById(id);
+        scheduleServiceCommunicator.deleteScheduleById(id);
     }
 
     @Override

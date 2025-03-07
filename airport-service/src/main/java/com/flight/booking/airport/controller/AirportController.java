@@ -28,7 +28,7 @@ public class AirportController {
     }
 
     @GetMapping("/airport/{id}")
-    public ResponseEntity<DTO<AirportResponse>> getUserById(@PathVariable int id){
+    public ResponseEntity<DTO<AirportResponse>> getAirportById(@PathVariable int id){
         AirportResponse airport =  service.getAirportById(id);
         return  ResponseEntity.ok(DTO.<AirportResponse>builder()
                 .success(true)
@@ -38,7 +38,7 @@ public class AirportController {
     }
 
     @PostMapping("/airport")
-    public ResponseEntity<DTO<AirportResponse>> createUser(@RequestBody AirportRequest airport) {
+    public ResponseEntity<DTO<AirportResponse>> createAirport(@RequestBody AirportRequest airport) {
         AirportResponse createdAirport = service.createAirport(airport);
         return ResponseEntity.status(201).body(DTO.<AirportResponse>builder()
                 .success(true)
@@ -58,7 +58,7 @@ public class AirportController {
     }
 
     @DeleteMapping("/airport/{id}")
-    private ResponseEntity<DTO<String>> deleteUserById(@PathVariable int id){
+    private ResponseEntity<DTO<String>> deleteAirportById(@PathVariable int id){
         service.deleteAirportById(id);
         return ResponseEntity.ok(DTO.<String>builder()
                         .success(true)
