@@ -3,11 +3,15 @@ package com.fligh.booking.schedule.mapper;
 import com.fligh.booking.schedule.feign.AirportServiceCommunicator;
 import com.fligh.booking.schedule.feign.FlightServiceCommunicator;
 import com.fligh.booking.schedule.dto.*;
-import com.fligh.booking.schedule.entity.Schedule;
+import com.fligh.booking.schedule.model.Schedule;
 import com.fligh.booking.schedule.exception.CommunicationFailedException;
+import com.fligh.booking.schedule.model.Seat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -37,6 +41,7 @@ public class ScheduleMapper {
                 .sourceAirportResponse(sourceAirport.getData())
                 .destinationAirportResponse(destinationAirport.getData())
                 .dateTime(schedule.getDateTime())
+                .seats(schedule.getSeats())
                 .build();
     }
 
@@ -51,7 +56,17 @@ public class ScheduleMapper {
         if(!sourceAirport.isSuccess() || !destinationAirport.isSuccess()){
             throw new CommunicationFailedException("Airports Not Found");
         }
+
+        List<Seat> seats =  new ArrayList<>();
+        for (int i = 0; i <flightResponse.getData().getTotalSeats(); i++) {
+            seats.add(Seat.builder()
+                            .seatNumber(i+1)
+                            .isBooked(false)
+                    .build());
+        }
+
         return  Schedule.builder()
+                .seats(seats)
                 .flightId(scheduleRequest.getFlightId())
                 .sourceAirportId(scheduleRequest.getSourceAirport())
                 .destinationAirportId(scheduleRequest.getDestinationAirport())

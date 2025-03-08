@@ -20,7 +20,6 @@ public class FlightMapper {
                 .flightNumber(flight.getFlightNumber())
                 .company(flight.getCompany())
                 .totalSeats(flight.getTotalSeats())
-                .seats(flight.getSeats())
                 .build();
     }
 

@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 public interface FlightService {
     public FlightResponse createFlight(FlightRequest flightRequest);
-    public FlightResponse getFlightById(String flightId) ;
+    public FlightResponse getFlightById(int flightId) ;
     public List<FlightResponse> getAllFlights() ;
     public FlightResponse updateFlight(FlightRequest flightRequest);
-    public void deleteFlightById(String flightId);
+    public void deleteFlightById(int flightId);
     public void deleteAllFlights();
 }

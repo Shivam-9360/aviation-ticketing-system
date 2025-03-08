@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class ScheduleRequest {
-    String flightId;
+    int flightId;
     int sourceAirport;
     int destinationAirport;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

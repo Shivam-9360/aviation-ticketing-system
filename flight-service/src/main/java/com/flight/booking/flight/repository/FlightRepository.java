@@ -1,7 +1,7 @@
 package com.flight.booking.flight.repository;
 
 import com.flight.booking.flight.model.Flight;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FlightRepository extends MongoRepository<Flight, String> {
+public interface FlightRepository extends JpaRepository<Flight, Integer> {
 }
