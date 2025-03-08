@@ -8,10 +8,10 @@ import java.util.List;
 public interface ScheduleService {
     ScheduleResponse createSchedule(ScheduleRequest schedule);
     List<ScheduleResponse> getAllSchedules();
-    void deleteScheduleById(int id);
+    void deleteScheduleById(String id);
     void deleteAllSchedules();
-    ScheduleResponse getScheduleById(int id);
+    ScheduleResponse getScheduleById(String id);
     ScheduleResponse updateSchedule(ScheduleRequest scheduleRequest);
     void deleteByAirportId(int id);
-    void deleteByFlightId(String id);
+    void deleteByFlightId(int id);
 }

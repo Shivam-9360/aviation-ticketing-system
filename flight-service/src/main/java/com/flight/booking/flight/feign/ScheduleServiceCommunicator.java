@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface ScheduleServiceCommunicator {
 
     @DeleteMapping("/api/schedule/flight/{id}")
-    void deleteScheduleByFlightId(@PathVariable("id") String id);
+    void deleteScheduleByFlightId(@PathVariable("id") int id);
 
     @DeleteMapping("/api/schedules")
     void deleteAllSchedules();

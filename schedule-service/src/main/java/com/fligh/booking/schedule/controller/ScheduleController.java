@@ -60,7 +60,7 @@ public class ScheduleController {
     }
     @Transactional
     @DeleteMapping("/schedule/flight/{id}")
-    public ResponseEntity<DTO<String>> deleteByFlightId (@PathVariable("id") String id){
+    public ResponseEntity<DTO<String>> deleteByFlightId (@PathVariable("id") int id){
         scheduleService.deleteByFlightId(id);
         return ResponseEntity.ok(DTO.<String>builder()
                 .success(true)
