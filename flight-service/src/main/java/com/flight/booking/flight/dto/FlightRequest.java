@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FlightRequest {
-    private String flightId;
+    private int flightId;
     private int flightNumber;
     private String company;
     private int totalSeats;

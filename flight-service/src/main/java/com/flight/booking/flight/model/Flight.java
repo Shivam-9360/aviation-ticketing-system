@@ -1,29 +1,31 @@
 package com.flight.booking.flight.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
 
-@Document(collection = "flight")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Component
+@Entity
+@Table(name = "flight")
 public class Flight {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private String flightId;
+    private int flightId;
 
-    @Indexed(unique = true)
+    @Column(unique = true, nullable = false)
     private int flightNumber;
+
+    @Column(nullable = false)
     private String company;
+
+    @Column(nullable = false)
     private int totalSeats;
-    private int bookedSeats;
-    private List<Seat> seats;
 }
