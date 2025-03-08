@@ -17,7 +17,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         DTO<String> customResponse = new DTO<>(false,"Invalid Email or Password",null);
         response.setContentType("application/json");
-        response.setStatus(401);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         new ObjectMapper().writeValue(response.getOutputStream(),customResponse);
     }
 }

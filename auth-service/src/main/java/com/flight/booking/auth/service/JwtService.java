@@ -1,15 +1,9 @@
 package com.flight.booking.auth.service;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -19,15 +13,15 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 @Component
 public class JwtService {
     @Value("${JWT_PRIVATE_SECRET}")
     private String SECRET;
 
-    public String generateToken(String email) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public String generateToken(String email, String role) throws NoSuchAlgorithmException, InvalidKeySpecException {
         Map<String,Object> claims = new HashMap<>();
+        claims.put("role", role);
         return createToken(claims, email);
     }
 

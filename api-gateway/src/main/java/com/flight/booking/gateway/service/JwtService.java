@@ -1,5 +1,6 @@
 package com.flight.booking.gateway.service;
 
+import com.flight.booking.gateway.entity.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,34 +21,51 @@ public class JwtService {
     @Value("${JWT_PUBLIC_SECRET}")
     private String SECRET;
 
-    public String extractEmail(String token) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public Date extractExpiration(String token) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public String extractRole(String token) {
+        return extractClaim(token, (claims) -> claims.get("role", String.class));
+    }
+
+    public UserDetails extractUserDetails(String token) {
+        return new UserDetailsImpl(extractEmail(token), null, extractRole(token));
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver)  {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    private Claims extractAllClaims(String token) {
+        try {
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSignKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    private Boolean isTokenExpired(String token) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    public Boolean validateToken(String token) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        return !isTokenExpired(token);
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
+            return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private PublicKey getSignKey() throws NoSuchAlgorithmException, InvalidKeySpecException {

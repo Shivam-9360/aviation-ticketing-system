@@ -2,9 +2,10 @@ package com.flight.booking.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = WebClientAutoConfiguration.class)
 @EnableDiscoveryClient
 public class ApiGatewayApplication {
 

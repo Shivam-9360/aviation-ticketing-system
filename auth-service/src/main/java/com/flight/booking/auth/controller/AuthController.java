@@ -29,7 +29,7 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {
             DTO<UserResponse> user = communicator.getUserByEmail(authRequest.getEmail());
-            final String token  = jwtService.generateToken(user.getData().getEmail());
+            final String token  = jwtService.generateToken(user.getData().getEmail(), user.getData().getRole());
             return ResponseEntity.ok()
                     .header("Authorization", "Bearer " + token)
                     .body(DTO.<AuthResponse>builder()
@@ -52,7 +52,7 @@ public class AuthController {
         DTO<UserResponse> userResponse = communicator.createUser(userRequest);
 
         if (userResponse != null && userResponse.isSuccess()) {
-            final String token  = jwtService.generateToken(userResponse.getData().getEmail());
+            final String token  = jwtService.generateToken(userResponse.getData().getEmail(), userResponse.getData().getRole());
             return ResponseEntity.ok()
                     .header("Authorization", "Bearer " + token)
                     .body(DTO.<AuthResponse>builder()
