@@ -1,4 +1,4 @@
-package com.fligh.booking.schedule.feignClient;
+package com.fligh.booking.schedule.feign;
 
 import com.fligh.booking.schedule.dto.AirportResponse;
 import com.fligh.booking.schedule.dto.DTO;

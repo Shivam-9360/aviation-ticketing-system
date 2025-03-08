@@ -68,9 +68,4 @@ public class AuthController {
             return ResponseEntity.badRequest().body(null);
         }
     }
-
-    @GetMapping("/check")
-    public ResponseEntity<String> check(HttpServletRequest request) {
-       return ResponseEntity.ok("You are in the system with session id : " + request.getSession().getId());
-    }
 }

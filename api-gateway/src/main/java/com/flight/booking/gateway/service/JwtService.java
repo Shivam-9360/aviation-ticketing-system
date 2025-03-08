@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 @Component
 public class JwtService {
-    @Value("${JWT_SECRET}")
+    @Value("${JWT_PUBLIC_SECRET}")
     private String SECRET;
 
     public String extractEmail(String token) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -46,9 +46,8 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        final String email = extractEmail(token);
-        return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public Boolean validateToken(String token) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        return !isTokenExpired(token);
     }
 
     private PublicKey getSignKey() throws NoSuchAlgorithmException, InvalidKeySpecException {

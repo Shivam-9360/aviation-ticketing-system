@@ -3,7 +3,7 @@ package com.flight.booking.flight.service;
 import com.flight.booking.flight.dto.FlightRequest;
 import com.flight.booking.flight.dto.FlightResponse;
 import com.flight.booking.flight.exception.FlightNotFoundException;
-import com.flight.booking.flight.feignClient.ScheduleServiceCommunicator;
+import com.flight.booking.flight.feign.ScheduleServiceCommunicator;
 import com.flight.booking.flight.mapper.FlightMapper;
 import com.flight.booking.flight.model.Flight;
 import com.flight.booking.flight.model.Seat;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

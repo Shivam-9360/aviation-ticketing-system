@@ -1,7 +1,7 @@
 package com.fligh.booking.schedule.mapper;
 
-import com.fligh.booking.schedule.feignClient.AirportServiceCommunicator;
-import com.fligh.booking.schedule.feignClient.FlightServiceCommunicator;
+import com.fligh.booking.schedule.feign.AirportServiceCommunicator;
+import com.fligh.booking.schedule.feign.FlightServiceCommunicator;
 import com.fligh.booking.schedule.dto.*;
 import com.fligh.booking.schedule.entity.Schedule;
 import com.fligh.booking.schedule.exception.CommunicationFailedException;

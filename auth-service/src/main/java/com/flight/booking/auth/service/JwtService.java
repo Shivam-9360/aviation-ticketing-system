@@ -23,7 +23,7 @@ import java.util.function.Function;
 
 @Component
 public class JwtService {
-    @Value("${JWT_SECRET}")
+    @Value("${JWT_PRIVATE_SECRET}")
     private String SECRET;
 
     public String generateToken(String email) throws NoSuchAlgorithmException, InvalidKeySpecException {
