@@ -25,8 +25,50 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec
-                        .pathMatchers(HttpMethod.POST, "/auth-service/api/**").permitAll()
-                        .pathMatchers(HttpMethod.GET, "/user-service/api/users").authenticated()
+                        // Auth Service - Public endpoints
+                        .pathMatchers(HttpMethod.POST, "/auth-service/api/login").permitAll()
+                        .pathMatchers(HttpMethod.POST, "/auth-service/api/register").permitAll()
+                        
+                        // User Service - Admin only endpoints
+                        .pathMatchers(HttpMethod.GET, "/user-service/api/user/email/**").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.GET, "/user-service/api/users").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.POST, "/user-service/api/user").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.DELETE, "/user-service/api/user/**").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.DELETE, "/user-service/api/users").hasRole("ADMIN")
+                        
+                        // User Service - User/Admin endpoints (handled by controller-level checks)
+                        .pathMatchers(HttpMethod.GET, "/user-service/api/user/**").authenticated()
+                        .pathMatchers(HttpMethod.PUT, "/user-service/api/user").authenticated()
+                        
+                        // Flight Service - Public endpoints
+                        .pathMatchers(HttpMethod.GET, "/flight-service/api/flights").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/flight-service/api/flight/**").permitAll()
+                        
+                        // Flight Service - Admin only endpoints
+                        .pathMatchers(HttpMethod.POST, "/flight-service/api/flight").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.PUT, "/flight-service/api/flight").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.DELETE, "/flight-service/api/flight/**").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.DELETE, "/flight-service/api/flights").hasRole("ADMIN")
+                        
+                        // Airport Service - Public endpoints
+                        .pathMatchers(HttpMethod.GET, "/airport-service/api/airports").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/airport-service/api/airport/**").permitAll()
+                        
+                        // Airport Service - Admin only endpoints
+                        .pathMatchers(HttpMethod.POST, "/airport-service/api/airport").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.PUT, "/airport-service/api/airport").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.DELETE, "/airport-service/api/airport/**").hasRole("ADMIN")
+                        
+                        // Schedule Service - Public endpoints
+                        .pathMatchers(HttpMethod.GET, "/schedule-service/api/schedules").permitAll()
+                        
+                        // Schedule Service - Admin only endpoints
+                        .pathMatchers(HttpMethod.POST, "/schedule-service/api/schedule").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedules").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedule/airport/**").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedule/flight/**").hasRole("ADMIN")
+                        
+                        // Default policy - require authentication for any other endpoints
                         .anyExchange().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
