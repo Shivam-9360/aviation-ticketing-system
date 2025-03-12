@@ -43,7 +43,8 @@ public class JwtAuthenticationFilter implements WebFilter {
                 // Set the Principal header in the request
                 ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
                         .header("email", user.getUsername())
-                        .header("role", user.getAuthorities().stream().findFirst().get().getAuthority())
+                        .header("role", user.getAuthorities().stream().findFirst()
+                            .map(auth -> auth.getAuthority()).orElse(""))
                         .build();
 
                 // Create a new ServerWebExchange with the modified request

@@ -61,7 +61,6 @@ public class JwtService {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
             return !isTokenExpired(token);
         } catch (Exception e) {
             return false;
