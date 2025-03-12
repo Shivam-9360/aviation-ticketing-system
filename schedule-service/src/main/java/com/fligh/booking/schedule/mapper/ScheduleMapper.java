@@ -16,12 +16,8 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class ScheduleMapper {
-
-    @Autowired
-    private FlightServiceCommunicator flightServiceCommunicator;
-
-    @Autowired
-    private AirportServiceCommunicator airportServiceCommunicator;
+    private final FlightServiceCommunicator flightServiceCommunicator;
+    private final AirportServiceCommunicator airportServiceCommunicator;
 
     public ScheduleResponse mapToDTO(Schedule schedule){
         DTO<FlightResponse> flightResponse = flightServiceCommunicator.getFlightById(schedule.getFlightId());
@@ -47,12 +43,12 @@ public class ScheduleMapper {
 
     public  Schedule mapToModel(ScheduleRequest scheduleRequest){
         DTO<FlightResponse> flightResponse = flightServiceCommunicator.getFlightById(scheduleRequest.getFlightId());
-        if(flightResponse == null){
+        if(!flightResponse.isSuccess()){
             throw new CommunicationFailedException("Flights not found");
         }
+
         DTO<AirportResponse> sourceAirport =  airportServiceCommunicator.getAirportById(scheduleRequest.getSourceAirport());
         DTO<AirportResponse> destinationAirport =  airportServiceCommunicator.getAirportById(scheduleRequest.getDestinationAirport());
-
         if(!sourceAirport.isSuccess() || !destinationAirport.isSuccess()){
             throw new CommunicationFailedException("Airports Not Found");
         }
