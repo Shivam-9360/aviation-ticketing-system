@@ -19,6 +19,8 @@ import java.security.spec.InvalidKeySpecException;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true",
+        allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS})
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserServiceCommunication communicator;
@@ -32,6 +34,7 @@ public class AuthController {
             final String token  = jwtService.generateToken(user.getData().getEmail(), user.getData().getRole());
             return ResponseEntity.ok()
                     .header("Authorization", "Bearer " + token)
+                    .header("Access-Control-Expose-Headers", "Authorization") // Important for CORS
                     .body(DTO.<AuthResponse>builder()
                             .success(true)
                             .message("Logged In Successfully")
@@ -55,11 +58,12 @@ public class AuthController {
             final String token  = jwtService.generateToken(userResponse.getData().getEmail(), userResponse.getData().getRole());
             return ResponseEntity.ok()
                     .header("Authorization", "Bearer " + token)
+                    .header("Access-Control-Expose-Headers", "Authorization") // Important for CORS
                     .body(DTO.<AuthResponse>builder()
                             .success(true)
                             .message("Registered Successfully")
                             .data(AuthResponse.builder()
-                                    .email(userResponse.getData().getName())
+                                    .email(userResponse.getData().getEmail())
                                     .name(userResponse.getData().getName())
                                     .role(userResponse.getData().getRole())
                                     .build())
