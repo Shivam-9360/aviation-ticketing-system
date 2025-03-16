@@ -71,7 +71,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     }
 
     @Override
-    public void deleteByFlightId(int id) {
+    public void deleteByFlightId(String id) {
         System.out.println("here");
         scheduleRepository.deleteByFlightId(id);
     }

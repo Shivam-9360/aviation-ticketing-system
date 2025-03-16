@@ -38,7 +38,7 @@ public class FlightController {
     }
 
     @GetMapping("/flight/{flightId}")
-    public ResponseEntity<DTO<FlightResponse>> getFlightById(@PathVariable int flightId) {
+    public ResponseEntity<DTO<FlightResponse>> getFlightById(@PathVariable String flightId) {
         FlightResponse fetchedFlight =   flightService.getFlightById(flightId);
         return ResponseEntity.ok(DTO.<FlightResponse>builder()
                 .success(true)
@@ -58,7 +58,7 @@ public class FlightController {
     }
 
     @DeleteMapping("/flight/{flightId}")
-    public ResponseEntity<DTO<String>> deleteFlight(@PathVariable int flightId) {
+    public ResponseEntity<DTO<String>> deleteFlight(@PathVariable String flightId) {
         flightService.deleteFlightById(flightId);
         return ResponseEntity.ok(DTO.<String>builder()
                 .success(true)

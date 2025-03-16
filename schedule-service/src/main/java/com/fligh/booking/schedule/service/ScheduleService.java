@@ -13,5 +13,5 @@ public interface ScheduleService {
     ScheduleResponse getScheduleById(String id);
     ScheduleResponse updateSchedule(ScheduleRequest scheduleRequest);
     void deleteByAirportId(int id);
-    void deleteByFlightId(int id);
+    void deleteByFlightId(String id);
 }

@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface FlightServiceCommunicator {
 
     @GetMapping("/api/flight/{id}")
-    public DTO<FlightResponse> getFlightById(@PathVariable("id") int id);
+    public DTO<FlightResponse> getFlightById(@PathVariable("id") String id);
 }

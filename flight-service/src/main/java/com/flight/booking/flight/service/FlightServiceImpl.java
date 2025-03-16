@@ -29,7 +29,7 @@ public class FlightServiceImpl implements FlightService {
         return flightMapper.mapToDTO(flight);
     }
 
-    public FlightResponse getFlightById(int flightId) {
+    public FlightResponse getFlightById(String flightId) {
         Flight flight = flightRepository.findById(flightId).orElseThrow(()-> new FlightNotFoundException("Flight Doesn't Exist"));
         return flightMapper.mapToDTO(flight);
     }
@@ -50,19 +50,19 @@ public class FlightServiceImpl implements FlightService {
         existingFlight.setFlightNumber(flight.getFlightNumber());
         existingFlight.setTotalSeats(flight.getTotalSeats());
         existingFlight.setCompany(flightRequest.getCompany());
-
+        existingFlight.setSeatType(flightRequest.getSeatType());
         flightRepository.save(existingFlight);
 
         return flightMapper.mapToDTO(existingFlight);
     }
 
-    public void deleteFlightById(int flightId) {
+    public void deleteFlightById(String flightId) {
         flightRepository.deleteById(flightId);
         scheduleServiceCommunicator.deleteScheduleByFlightId(flightId);
     }
 
     public void deleteAllFlights() {
         flightRepository.deleteAll();
-        scheduleServiceCommunicator.deleteAllSchedules();
+//        scheduleServiceCommunicator.deleteAllSchedules();
     }
 }

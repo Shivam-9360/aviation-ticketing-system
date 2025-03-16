@@ -3,14 +3,10 @@ server:
 spring:
   application:
     name: "flight-service"
-  datasource:
-    url: jdbc:mysql://localhost:3306/flight-service
-    username: root
-    password: root
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+  data:
+    mongodb:
+      uri: "mongodb://localhost:27017/flight-service"
+      database: "flight-service"
 eureka:
   client:
     service-url:

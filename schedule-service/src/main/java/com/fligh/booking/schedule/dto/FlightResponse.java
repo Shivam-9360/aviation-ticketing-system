@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class FlightResponse {
-    private int flightId;
+    private String flightId;
     private int flightNumber;
     private String company;
     private int totalSeats;

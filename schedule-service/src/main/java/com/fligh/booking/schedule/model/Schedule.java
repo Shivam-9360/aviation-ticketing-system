@@ -19,7 +19,7 @@ import java.util.List;
 public class Schedule {
     @Id
     private String id;
-    private int flightId;
+    private String flightId;
     private int sourceAirportId;
     private int destinationAirportId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
