@@ -2,11 +2,13 @@ package com.flight.booking.flight.service;
 
 import com.flight.booking.flight.dto.FlightRequest;
 import com.flight.booking.flight.dto.FlightResponse;
+import com.flight.booking.flight.exception.CommunicationFailedException;
 import com.flight.booking.flight.exception.FlightNotFoundException;
 import com.flight.booking.flight.feign.ScheduleServiceCommunicator;
 import com.flight.booking.flight.mapper.FlightMapper;
 import com.flight.booking.flight.model.Flight;
 import com.flight.booking.flight.repository.FlightRepository;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,11 +60,19 @@ public class FlightServiceImpl implements FlightService {
 
     public void deleteFlightById(String flightId) {
         flightRepository.deleteById(flightId);
-        scheduleServiceCommunicator.deleteScheduleByFlightId(flightId);
+        try{
+            scheduleServiceCommunicator.deleteScheduleByFlightId(flightId);
+        }catch(FeignException.ServiceUnavailable ex){
+            throw new CommunicationFailedException("Flight deleted, Couldn't communicate with Schedule Service");
+        }
     }
 
     public void deleteAllFlights() {
         flightRepository.deleteAll();
-//        scheduleServiceCommunicator.deleteAllSchedules();
+        try{
+            scheduleServiceCommunicator.deleteAllSchedules();
+        }catch(FeignException.ServiceUnavailable ex){
+            throw new CommunicationFailedException("Flights deleted, Couldn't communicate with Schedule Service");
+        }
     }
 }

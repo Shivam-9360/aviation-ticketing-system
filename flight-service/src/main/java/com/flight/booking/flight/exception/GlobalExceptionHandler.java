@@ -16,6 +16,14 @@ public class GlobalExceptionHandler {
                         .data(null)
                 .build());
     }
+    @ExceptionHandler(CommunicationFailedException.class)
+    public ResponseEntity<DTO<String>> handleCommunicationFailedException(CommunicationFailedException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DTO.<String>builder()
+                .success(true)
+                .message(ex.getMessage())
+                .data(null)
+                .build());
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<DTO<String>> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(DTO.<String>builder()
