@@ -18,6 +18,15 @@ public class GlobalExceptionHandler {
                 .build());
     }
 
+    @ExceptionHandler(CommunicationFailedException.class)
+    public ResponseEntity<DTO<String>> handleCommunicationFailedException(CommunicationFailedException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(DTO.<String>builder()
+                .success(true)
+                .message(ex.getMessage())
+                .data(null)
+                .build());
+    }
+
     @ExceptionHandler(AirportAlreadyExistsException.class)
     public ResponseEntity<DTO<String>> handleUserAlreadyExistsException(AirportAlreadyExistsException ex){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(DTO.<String>builder()

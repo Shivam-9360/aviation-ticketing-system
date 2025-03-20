@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 public class AirportResponse {
-    String airportName;
+    String name;
     String city;
     int id;
     String country;

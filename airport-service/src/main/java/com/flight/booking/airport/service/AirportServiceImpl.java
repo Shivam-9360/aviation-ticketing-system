@@ -4,9 +4,11 @@ import com.flight.booking.airport.dto.AirportRequest;
 import com.flight.booking.airport.dto.AirportResponse;
 import com.flight.booking.airport.entity.Airport;
 import com.flight.booking.airport.exception.AirportDoesntExistException;
+import com.flight.booking.airport.exception.CommunicationFailedException;
 import com.flight.booking.airport.feign.ScheduleServiceCommunicator;
 import com.flight.booking.airport.mapper.AirportMapper;
 import com.flight.booking.airport.repository.AirportRepository;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,7 +47,11 @@ private ScheduleServiceCommunicator scheduleServiceCommunicator;
             throw new AirportDoesntExistException("Airport with Name " + id + " already exists");
         }
         repo.deleteById(id);
-        scheduleServiceCommunicator.deleteScheduleById(id);
+        try{
+            scheduleServiceCommunicator.deleteScheduleById(id);
+        }catch(FeignException.ServiceUnavailable _){
+            throw new CommunicationFailedException("Airport deleted, Couldn't communicate with Schedule Service");
+        }
     }
 
     @Override

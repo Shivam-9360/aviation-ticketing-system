@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class AirportMapper {
     public AirportResponse mapToDTO(Airport airport){
         return AirportResponse.builder()
-                .airportName(airport.getAirportName())
+                .name(airport.getAirportName())
                 .id(airport.getId())
                 .city(airport.getCity())
                 .country(airport.getCountry())
