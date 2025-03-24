@@ -19,8 +19,6 @@ import java.security.spec.InvalidKeySpecException;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true",
-        allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS})
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserServiceCommunication communicator;

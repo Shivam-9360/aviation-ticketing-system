@@ -21,23 +21,15 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public CorsWebFilter corsWebFilter() {
-        CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOriginPattern("*");
-        corsConfig.addAllowedMethod("*");
-        corsConfig.addAllowedHeader("*");
-        corsConfig.setAllowCredentials(true);
-        corsConfig.setMaxAge(3600L); // Important: cache preflight response for 1 hour
+    SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 
+        CorsConfiguration corsConfig = getCorsConfiguration();
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig);
-        return new CorsWebFilter(source);
-    }
 
-    @Bean
-    SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .cors(cors -> cors.configurationSource(source))
                 .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec
                         // Explicitly permit OPTIONS requests for CORS preflight
@@ -88,11 +80,25 @@ public class SecurityConfig {
 
                         // Default policy - require authentication for any other endpoints
                         .anyExchange().authenticated())
-                // Add the CORS filter BEFORE the JWT authentication filter
-                .addFilterBefore(corsWebFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
-                .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+
+                .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .build();
+    }
+
+    private static CorsConfiguration getCorsConfiguration() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.addAllowedOriginPattern("*");
+        corsConfig.addAllowedMethod("*");
+        corsConfig.addAllowedHeader("*");
+        corsConfig.setAllowCredentials(true);
+        corsConfig.setMaxAge(3600L);
+
+        // Add required exposed headers
+        corsConfig.addExposedHeader("Authorization");
+        corsConfig.addExposedHeader("Access-Control-Allow-Origin");
+        corsConfig.addExposedHeader("Access-Control-Allow-Credentials");
+        return corsConfig;
     }
 }

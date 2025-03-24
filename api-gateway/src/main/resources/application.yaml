@@ -5,13 +5,6 @@ spring:
     name: "api-gateway"
   cloud:
     gateway:
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOriginPatterns: "*"
-            allowedMethods: "*"
-            allowedHeaders: "*"
-            allowCredentials: true
       routes:
         - id: airport-service
           uri: lb://airport-service
