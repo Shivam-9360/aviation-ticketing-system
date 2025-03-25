@@ -8,6 +8,7 @@ import com.flight.booking.user.exception.UserAlreadyExistsException;
 import com.flight.booking.user.exception.UserNotFoundException;
 import com.flight.booking.user.mapper.UserMapper;
 import com.flight.booking.user.repository.UserRepository;
+import com.flight.booking.user.websocket.UserWebSocketHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final UserWebSocketHandler userWebSocketHandler;
 
     @Override
     public UserResponse createUser(UserRequest user) {
@@ -57,21 +59,22 @@ public class UserServiceImpl implements UserService{
 
         existingUser.setName(user.getName());
         existingUser.setEmail(user.getEmail());
-        existingUser.setPassword(user.getPassword());
+        existingUser.setPassword(existingUser.getPassword());
         existingUser.setRole(user.getRole());
 
-        return userMapper.mapToDTO(userRepository.save(existingUser));
+        UserResponse userSaved = userMapper.mapToDTO(userRepository.save(existingUser));
+        userWebSocketHandler.sendUserUpdate(existingUser, false);
+        return userSaved;
     }
 
 
     @Override
     public void deleteUserById(int userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundException("Cannot delete. User not found with ID: " + userId);
-        }
-        userRepository.deleteById(userId);
-    }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Cannot delete. User not found with ID: " + userId));
 
+        userRepository.deleteById(userId);
+        userWebSocketHandler.sendUserUpdate(user, true);    }
     @Override
     public void deleteAllUsers() {
         List<User> users = userRepository.findAll();

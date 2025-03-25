@@ -6,6 +6,11 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: user-service-websocket
+          uri: ws://localhost:9000
+          predicates:
+            - Path=/ws/user-updates
+
         - id: airport-service
           uri: lb://airport-service
           predicates:

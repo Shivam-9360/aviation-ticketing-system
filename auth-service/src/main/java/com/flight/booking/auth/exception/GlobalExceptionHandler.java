@@ -16,4 +16,28 @@ public class GlobalExceptionHandler {
                 .data(null)
                 .build());
     }
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<DTO<String>> handleUserAlreadyExists(UserAlreadyExistsException ex){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(DTO.<String>builder()
+                .success(false)
+                .message(ex.getMessage())
+                .data(null)
+                .build());
+    }
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<DTO<String>> handleUserNotFound(UserNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(DTO.<String>builder()
+                .success(false)
+                .message(ex.getMessage())
+                .data(null)
+                .build());
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<DTO<String>> handleGenericException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(DTO.<String>builder()
+                .success(false)
+                .message("Something went wrong: " + ex.getMessage())
+                .data(null)
+                .build());
+    }
 }

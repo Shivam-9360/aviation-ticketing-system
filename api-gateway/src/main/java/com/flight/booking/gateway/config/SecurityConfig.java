@@ -5,16 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -32,6 +29,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(source))
                 .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec
+
+                        .pathMatchers("/ws/**").permitAll()
+
                         // Explicitly permit OPTIONS requests for CORS preflight
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
@@ -41,9 +41,9 @@ public class SecurityConfig {
 
                         // User Service - Admin only endpoints
                         .pathMatchers(HttpMethod.GET, "/user-service/api/user/email/**").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.GET, "/user-service/api/users").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.GET, "/user-service/api/users").authenticated()
                         .pathMatchers(HttpMethod.POST, "/user-service/api/user").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.DELETE, "/user-service/api/user/**").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.DELETE, "/user-service/api/user/**").authenticated()
                         .pathMatchers(HttpMethod.DELETE, "/user-service/api/users").hasRole("ADMIN")
 
                         // User Service - User/Admin endpoints (handled by controller-level checks)
