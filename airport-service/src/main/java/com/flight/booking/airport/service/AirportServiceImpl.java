@@ -3,14 +3,11 @@ package com.flight.booking.airport.service;
 import com.flight.booking.airport.dto.AirportRequest;
 import com.flight.booking.airport.dto.AirportResponse;
 import com.flight.booking.airport.entity.Airport;
+import com.flight.booking.airport.event.AirportEventPublisher;
 import com.flight.booking.airport.exception.AirportDoesntExistException;
-import com.flight.booking.airport.exception.CommunicationFailedException;
-import com.flight.booking.airport.feign.ScheduleServiceCommunicator;
 import com.flight.booking.airport.mapper.AirportMapper;
 import com.flight.booking.airport.repository.AirportRepository;
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,10 +18,9 @@ import java.util.stream.Collectors;
 public class AirportServiceImpl implements AirportService{
 
     private final AirportRepository repo;
-private final AirportMapper airportMapper;
+    private final AirportMapper airportMapper;
+    private final AirportEventPublisher airportEventPublisher;
 
-@Autowired
-private ScheduleServiceCommunicator scheduleServiceCommunicator;
 
     @Override
     public List<AirportResponse> getAllAirports() {
@@ -46,12 +42,9 @@ private ScheduleServiceCommunicator scheduleServiceCommunicator;
         if(repo.findById(id).isEmpty()){
             throw new AirportDoesntExistException("Airport with Name " + id + " already exists");
         }
+        airportEventPublisher.sendAirportDeletedEvent(id);
         repo.deleteById(id);
-        try{
-            scheduleServiceCommunicator.deleteScheduleById(id);
-        }catch(FeignException.ServiceUnavailable _){
-            throw new CommunicationFailedException("Airport deleted, Couldn't communicate with Schedule Service");
-        }
+
     }
 
     @Override
