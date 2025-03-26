@@ -16,6 +16,7 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
     SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -27,7 +28,9 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .cors(cors -> cors.configurationSource(source))
-                .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedHandler))
                 .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec
 
                         .pathMatchers("/ws/**").permitAll()
@@ -40,11 +43,11 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.POST, "/auth-service/api/register").permitAll()
 
                         // User Service - Admin only endpoints
-                        .pathMatchers(HttpMethod.GET, "/user-service/api/user/email/**").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.GET, "/user-service/api/users").authenticated()
-                        .pathMatchers(HttpMethod.POST, "/user-service/api/user").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.DELETE, "/user-service/api/user/**").authenticated()
-                        .pathMatchers(HttpMethod.DELETE, "/user-service/api/users").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.GET, "/user-service/api/user/email/**").hasRole("Admin")
+                        .pathMatchers(HttpMethod.GET, "/user-service/api/users").hasRole("Admin")
+                        .pathMatchers(HttpMethod.POST, "/user-service/api/user").hasRole("Admin")
+                        .pathMatchers(HttpMethod.DELETE, "/user-service/api/user/**").hasRole("Admin")
+                        .pathMatchers(HttpMethod.DELETE, "/user-service/api/users").hasRole("Admin")
 
                         // User Service - User/Admin endpoints (handled by controller-level checks)
                         .pathMatchers(HttpMethod.GET, "/user-service/api/user/**").authenticated()
@@ -55,28 +58,28 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.GET, "/flight-service/api/flight/**").permitAll()
 
                         // Flight Service - Admin only endpoints
-                        .pathMatchers(HttpMethod.POST, "/flight-service/api/flight").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.PUT, "/flight-service/api/flight").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.DELETE, "/flight-service/api/flight/**").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.DELETE, "/flight-service/api/flights").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.POST, "/flight-service/api/flight").hasRole("Admin")
+                        .pathMatchers(HttpMethod.PUT, "/flight-service/api/flight").hasRole("Admin")
+                        .pathMatchers(HttpMethod.DELETE, "/flight-service/api/flight/**").hasRole("Admin")
+                        .pathMatchers(HttpMethod.DELETE, "/flight-service/api/flights").hasRole("Admin")
 
                         // Airport Service - Public endpoints
                         .pathMatchers(HttpMethod.GET, "/airport-service/api/airports").permitAll()
                         .pathMatchers(HttpMethod.GET, "/airport-service/api/airport/**").permitAll()
 
                         // Airport Service - Admin only endpoints
-                        .pathMatchers(HttpMethod.POST, "/airport-service/api/airport").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.PUT, "/airport-service/api/airport").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.DELETE, "/airport-service/api/airport/**").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.POST, "/airport-service/api/airport").hasRole("Admin")
+                        .pathMatchers(HttpMethod.PUT, "/airport-service/api/airport").hasRole("Admin")
+                        .pathMatchers(HttpMethod.DELETE, "/airport-service/api/airport/**").hasRole("Admin")
 
                         // Schedule Service - Public endpoints
                         .pathMatchers(HttpMethod.GET, "/schedule-service/api/schedules").permitAll()
 
                         // Schedule Service - Admin only endpoints
-                        .pathMatchers(HttpMethod.POST, "/schedule-service/api/schedule").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedules").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedule/airport/**").hasRole("ADMIN")
-                        .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedule/flight/**").hasRole("ADMIN")
+                        .pathMatchers(HttpMethod.POST, "/schedule-service/api/schedule").hasRole("Admin")
+                        .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedules").hasRole("Admin")
+                        .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedule/airport/**").hasRole("Admin")
+                        .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedule/flight/**").hasRole("Admin")
 
                         // Default policy - require authentication for any other endpoints
                         .anyExchange().authenticated())
