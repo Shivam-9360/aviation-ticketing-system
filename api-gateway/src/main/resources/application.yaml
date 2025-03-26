@@ -19,21 +19,21 @@ spring:
             - StripPrefix=1
 
         - id: auth-service
-          uri: lb://auth-service
+          uri: http://localhost:9002
           predicates:
             - Path=/auth-service/**
           filters:
             - StripPrefix=1
 
         - id: flight-service
-          uri: lb://flight-service
+          uri: http://localhost:9003
           predicates:
             - Path=/flight-service/**
           filters:
             - StripPrefix=1
 
         - id: user-service
-          uri: lb://user-service
+          uri: http://localhost:9000
           predicates:
             - Path=/user-service/**
           filters:
@@ -44,7 +44,12 @@ server:
 
 eureka:
   client:
-    service-url:
+    serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+    ip-address: 127.0.0.1
+    hostname: localhost
+    instance-id: ${spring.application.name}:${server.port}
 
 JWT_PUBLIC_SECRET: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqfni37IKzokPkRjL6ekyGgwHiGcnLIAHhgoWddyraSRxNw4VfBNSFUaLxT9DMiNCwH614ALasV6WNJwtiPXwPVTb8U6fAdKASdK0zd9jZaQeGn2eU+u552g22OimrQGuqruTv16NLpEduTiPK4zM+RLm8jCqhZiZhwmiFfCyciPhBfYnBYQ7+pbldEYtw072mX3UZuzCNNtNF/IDnkoj4scA04MMmmhtjN4F+pyud4jksnrmaR8oJvC3lsLplL7minIacGlkfBA6wqfa3jz8EfEtgBYwWp6U/yoHTQ/9mt5bh/EHwxLIjs4cw67kRcTnrOQtH4N7uAoWiX9EqvIV2wIDAQAB"
