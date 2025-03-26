@@ -31,8 +31,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<DTO<AuthResponse>> authenticateAndGetToken(@RequestBody AuthRequest authRequest) throws Exception {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
+
         if (authentication.isAuthenticated()) {
-            try {
                 DTO<UserResponse> user = communicator.getUserByEmail(authRequest.getEmail());
                 final String token = jwtService.generateToken(user.getData().getEmail(), user.getData().getRole());
 
@@ -49,19 +49,6 @@ public class AuthController {
                                         .id(user.getData().getId())
                                         .build())
                                 .build());
-            } catch (FeignException.NotFound ex) {
-                // Extract the error message from the response body
-                String errorMessage = "User not found";
-                try {
-                    DTO<?> errorResponse = new ObjectMapper().readValue(ex.contentUTF8(), DTO.class);
-                    errorMessage = errorResponse.getMessage(); // Assuming DTO has a `message` field
-                } catch (Exception jsonEx) {
-                    // If parsing fails, fallback to default message
-                }
-
-                throw new UserNotFoundException(errorMessage);
-            }
-
         } else {
             throw new CredentialsNotValidException("Invalid user request!");
         }

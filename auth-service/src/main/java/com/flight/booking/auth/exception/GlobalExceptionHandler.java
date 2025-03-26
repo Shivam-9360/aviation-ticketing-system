@@ -3,6 +3,7 @@ package com.flight.booking.auth.exception;
 import com.flight.booking.auth.dto.DTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -26,12 +27,18 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<DTO<String>> handleUserNotFound(UserNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(DTO.<String>builder()
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(DTO.<String>builder()
                 .success(false)
                 .message(ex.getMessage())
                 .data(null)
                 .build());
     }
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<DTO<String>> handleBadCredentialsException(BadCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new DTO<>(false, "Invalid email or password", null));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<DTO<String>> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(DTO.<String>builder()

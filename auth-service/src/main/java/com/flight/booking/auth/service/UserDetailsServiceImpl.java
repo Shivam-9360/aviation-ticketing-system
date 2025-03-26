@@ -4,6 +4,7 @@ import com.flight.booking.auth.feign.UserServiceCommunication;
 import com.flight.booking.auth.dto.DTO;
 import com.flight.booking.auth.dto.UserResponse;
 import com.flight.booking.auth.entity.UserDetailsImpl;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,7 +18,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        DTO<UserResponse> user = communicator.getUserByEmail(username);
-        return new UserDetailsImpl(user.getData());
+        try {
+            DTO<UserResponse> user = communicator.getUserByEmail(username);
+            return new UserDetailsImpl(user.getData());
+        } catch (FeignException.NotFound ex) {
+            throw new UsernameNotFoundException("User with Email " + username + " not found.");
+        }
     }
 }
