@@ -19,25 +19,32 @@ spring:
             - StripPrefix=1
 
         - id: auth-service
-          uri: http://localhost:9002
+          uri: lb://auth-service
           predicates:
             - Path=/auth-service/**
           filters:
             - StripPrefix=1
 
         - id: flight-service
-          uri: http://localhost:9003
+          uri: lb://flight-service
           predicates:
             - Path=/flight-service/**
           filters:
             - StripPrefix=1
 
         - id: user-service
-          uri: http://localhost:9000
+          uri: lb://user-service
           predicates:
             - Path=/user-service/**
           filters:
             - StripPrefix=1
+
+        - id: schedule-service
+          uri: lb://schedule-service
+          predicates:
+            - Path=/schedule-service/**
+          filters:
+              - StripPrefix=1
 
 server:
   port: 8080
