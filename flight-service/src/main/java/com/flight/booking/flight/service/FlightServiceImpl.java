@@ -2,18 +2,15 @@ package com.flight.booking.flight.service;
 
 import com.flight.booking.flight.dto.FlightRequest;
 import com.flight.booking.flight.dto.FlightResponse;
-import com.flight.booking.flight.exception.CommunicationFailedException;
+import com.flight.booking.flight.event.FlightEventPublisher;
 import com.flight.booking.flight.exception.FlightNotFoundException;
-import com.flight.booking.flight.feign.ScheduleServiceCommunicator;
 import com.flight.booking.flight.mapper.FlightMapper;
 import com.flight.booking.flight.model.Flight;
 import com.flight.booking.flight.repository.FlightRepository;
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,9 +18,8 @@ import java.util.List;
 public class FlightServiceImpl implements FlightService {
     private final FlightRepository flightRepository;
     private final FlightMapper flightMapper;
-
+    private final FlightEventPublisher flightEventPublisher;
     @Autowired
-    private ScheduleServiceCommunicator scheduleServiceCommunicator;
 
     public FlightResponse createFlight(FlightRequest flightRequest) {
         Flight flight = flightMapper.mapToModel(flightRequest);
@@ -59,20 +55,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
     public void deleteFlightById(String flightId) {
+        flightEventPublisher.sendFlightDeletedEvent(flightId);
         flightRepository.deleteById(flightId);
-        try{
-            scheduleServiceCommunicator.deleteScheduleByFlightId(flightId);
-        }catch(FeignException.ServiceUnavailable ex){
-            throw new CommunicationFailedException("Flight deleted, Couldn't communicate with Schedule Service");
-        }
-    }
-
-    public void deleteAllFlights() {
-        flightRepository.deleteAll();
-        try{
-            scheduleServiceCommunicator.deleteAllSchedules();
-        }catch(FeignException.ServiceUnavailable ex){
-            throw new CommunicationFailedException("Flights deleted, Couldn't communicate with Schedule Service");
-        }
     }
 }

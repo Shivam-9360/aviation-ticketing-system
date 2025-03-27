@@ -65,13 +65,4 @@ public class FlightController {
                 .message("Flight Deleted Successfully")
                 .build());
     }
-
-    @DeleteMapping("/flights")
-    public ResponseEntity<DTO<String>> deleteAllFlights() {
-        flightService.deleteAllFlights();
-        return ResponseEntity.ok(DTO.<String>builder()
-                .success(true)
-                .message("Flight Deleted Successfully")
-                .build());
-    }
 }

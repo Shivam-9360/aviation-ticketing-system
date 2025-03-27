@@ -13,5 +13,4 @@ public interface FlightService {
     public List<FlightResponse> getAllFlights() ;
     public FlightResponse updateFlight(FlightRequest flightRequest);
     public void deleteFlightById(String flightId);
-    public void deleteAllFlights();
 }
