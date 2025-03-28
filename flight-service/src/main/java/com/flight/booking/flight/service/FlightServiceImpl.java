@@ -16,10 +16,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FlightServiceImpl implements FlightService {
+
     private final FlightRepository flightRepository;
     private final FlightMapper flightMapper;
     private final FlightEventPublisher flightEventPublisher;
-    @Autowired
 
     public FlightResponse createFlight(FlightRequest flightRequest) {
         Flight flight = flightMapper.mapToModel(flightRequest);
