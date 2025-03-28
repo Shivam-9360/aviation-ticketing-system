@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class UserDetailsImpl implements UserDetails {
+    private final int id;
+    private final String name;
     private final String email;
     private final String password;
     private final List<GrantedAuthority> authorities;
@@ -19,6 +21,15 @@ public class UserDetailsImpl implements UserDetails {
         email = user.getEmail();
         password = user.getPassword();
         authorities = List.of(new SimpleGrantedAuthority(user.getRole()));
+        id = user.getId();
+        name = user.getName();
+    }
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override

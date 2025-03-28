@@ -1,6 +1,7 @@
 package com.flight.booking.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flight.booking.auth.entity.UserDetailsImpl;
 import com.flight.booking.auth.exception.UserAlreadyExistsException;
 import com.flight.booking.auth.exception.UserNotFoundException;
 import com.flight.booking.auth.feign.UserServiceCommunication;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +35,12 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
 
         if (authentication.isAuthenticated()) {
-                DTO<UserResponse> user = communicator.getUserByEmail(authRequest.getEmail());
-                final String token = jwtService.generateToken(user.getData().getEmail(), user.getData().getRole());
+                String email = authentication.getName();
+                String role = authentication.getAuthorities().toArray()[0].toString();
+                String name = ((UserDetailsImpl) authentication.getPrincipal()).getName();
+                int id = ((UserDetailsImpl) authentication.getPrincipal()).getId();
+
+                final String token = jwtService.generateToken(email, role);
 
                 return ResponseEntity.ok()
                         .header("Authorization", "Bearer " + token)
@@ -43,10 +49,10 @@ public class AuthController {
                                 .success(true)
                                 .message("Logged In Successfully")
                                 .data(AuthResponse.builder()
-                                        .email(user.getData().getEmail())
-                                        .name(user.getData().getName())
-                                        .role(user.getData().getRole())
-                                        .id(user.getData().getId())
+                                        .email(email)
+                                        .name(name)
+                                        .role(role)
+                                        .id(id)
                                         .build())
                                 .build());
         } else {
