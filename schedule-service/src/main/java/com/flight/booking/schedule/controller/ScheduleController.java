@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,32 @@ public class ScheduleController {
     }
 
     @GetMapping("/schedules")
-    public ResponseEntity<DTO<List<ScheduleResponse>>> getAllFlights(){
+    public ResponseEntity<DTO<List<ScheduleResponse>>> getSchedules(
+            @RequestParam(name = "start") String start,
+            @RequestParam(name = "end") String end) {
+        Instant startDateTime = Instant.parse(start);
+        Instant endDateTime = Instant.parse(end);
+
+
+        List<ScheduleResponse> schedules = scheduleService.getSchedulesByDateTime(startDateTime,endDateTime);
+        return ResponseEntity.ok(DTO.<List<ScheduleResponse>>builder()
+                .success(true)
+                .message("Schedules Fetched Successfully")
+                .data(schedules)
+                .build());
+    }
+
+    @GetMapping("/schedule/{id}")
+    public ResponseEntity<DTO<ScheduleResponse>> getScheduleById(@PathVariable("id") String id){
+        ScheduleResponse schedule = scheduleService.getScheduleById(id);
+        return ResponseEntity.ok(DTO.<ScheduleResponse>builder()
+                .success(true)
+                .message("Schedules Fetched Successfully")
+                .data(schedule)
+                .build());
+    }
+    @GetMapping("/all-schedules")
+    public ResponseEntity<DTO<List<ScheduleResponse>>> getAllSchedules(){
         List<ScheduleResponse> schedules = scheduleService.getAllSchedules();
         return ResponseEntity.ok(DTO.<List<ScheduleResponse>>builder()
                 .success(true)
@@ -37,7 +63,7 @@ public class ScheduleController {
                 .build());
     }
     @DeleteMapping("/schedules")
-    public ResponseEntity<DTO<String>> deleteAllFlights (){
+    public ResponseEntity<DTO<String>> deleteAllSchedules (){
         scheduleService.deleteAllSchedules();
         return ResponseEntity.ok(DTO.<String>builder()
                 .success(true)

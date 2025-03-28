@@ -12,6 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Service
@@ -30,7 +34,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     public ScheduleResponse createSchedule(ScheduleRequest schedule) {
 
         return scheduleMapper
-                .mapToDTO(scheduleRepository.save(scheduleMapper.mapToModel(schedule)));
+                .mapToDTO(scheduleRepository.save(scheduleMapper.mapToModel(schedule)),false);
 
     }
 
@@ -40,7 +44,27 @@ public class ScheduleServiceImpl implements ScheduleService{
         if(schedules.isEmpty()){
             throw new NoScheduleFoundException("There are no schedules yet!");
         }
-        return  schedules.stream().map(scheduleMapper::mapToDTO).toList();
+        return  schedules.stream().map(schedule -> scheduleMapper.mapToDTO(schedule,false)).toList();
+    }
+
+    public List<ScheduleResponse> getSchedulesByDateTime(Instant start, Instant end) {
+        if (start == null || end == null) {
+            throw new IllegalArgumentException("Start and end time must be provided.");
+        }
+        if (start.isAfter(end)) {
+            throw new IllegalArgumentException("Start time cannot be after end time.");
+        }
+        System.out.println("🔍 API Received Start: " + start);
+        System.out.println("🔍 API Received End: " + end);
+        List<Schedule> schedules = scheduleRepository.findSchedulesBetween(start, end);
+
+        if (schedules.isEmpty()) {
+            throw new NoScheduleFoundException("No schedules found for the given time range.");
+        }
+
+        return schedules.stream()
+                .map(schedule -> scheduleMapper.mapToDTO(schedule, false))
+                .toList();
     }
 
     @Override
@@ -57,7 +81,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     public ScheduleResponse getScheduleById(String id) {
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(()-> new NoScheduleFoundException("Schedule Doesn't Exist"));
-        return scheduleMapper.mapToDTO(schedule);
+        return scheduleMapper.mapToDTO(schedule,true);
     }
 
     @Override

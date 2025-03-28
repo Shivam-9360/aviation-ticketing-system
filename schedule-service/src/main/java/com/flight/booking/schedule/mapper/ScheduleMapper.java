@@ -10,6 +10,7 @@ import com.flight.booking.schedule.model.Seat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class ScheduleMapper {
     private final FlightServiceCommunicator flightServiceCommunicator;
     private final AirportServiceCommunicator airportServiceCommunicator;
 
-    public ScheduleResponse mapToDTO(Schedule schedule){
+    public ScheduleResponse mapToDTO(Schedule schedule, boolean isById){
         DTO<FlightResponse> flightResponse = flightServiceCommunicator.getFlightById(schedule.getFlightId());
         if(flightResponse == null){
             throw new CommunicationFailedException("Flights not found");
@@ -30,16 +31,27 @@ public class ScheduleMapper {
         if(!sourceAirport.isSuccess() || !destinationAirport.isSuccess()){
             throw new CommunicationFailedException("Airports Not Found");
         }
-
-        return ScheduleResponse
+        if(isById){
+            return ScheduleResponse
+                    .builder()
+                    .id(schedule.getId())
+                    .flightResponse(flightResponse.getData())
+                    .sourceAirportResponse(sourceAirport.getData())
+                    .destinationAirportResponse(destinationAirport.getData())
+                    .dateTime(schedule.getDateTime().toString())
+                    .seats(schedule.getSeats())
+                    .build();
+        }
+       return ScheduleResponse
                 .builder()
                 .id(schedule.getId())
                 .flightResponse(flightResponse.getData())
                 .sourceAirportResponse(sourceAirport.getData())
                 .destinationAirportResponse(destinationAirport.getData())
-                .dateTime(schedule.getDateTime())
-                .seats(schedule.getSeats())
+               .dateTime(schedule.getDateTime().toString())
+                .seats(null)
                 .build();
+
     }
 
     public  Schedule mapToModel(ScheduleRequest scheduleRequest) {

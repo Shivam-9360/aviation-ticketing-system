@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Component
@@ -18,6 +19,5 @@ public class ScheduleRequest {
     String flightId;
     int sourceAirport;
     int destinationAirport;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime dateTime;
+    Instant dateTime;
 }

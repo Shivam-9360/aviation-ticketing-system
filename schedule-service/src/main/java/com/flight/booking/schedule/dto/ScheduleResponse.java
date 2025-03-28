@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -17,7 +15,7 @@ import java.util.List;
 @Builder
 public class ScheduleResponse {
     String id;
-    LocalDateTime dateTime;
+    String dateTime;;
     FlightResponse flightResponse;
     AirportResponse sourceAirportResponse;
     AirportResponse destinationAirportResponse;
