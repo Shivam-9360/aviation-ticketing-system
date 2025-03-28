@@ -75,11 +75,15 @@ public class SecurityConfig {
                         // Schedule Service - Public endpoints
                         .pathMatchers(HttpMethod.GET, "/schedule-service/api/schedules").permitAll()
 
+                        // Schedule Service -  Authenticated Endpoint
+                        .pathMatchers(HttpMethod.GET,"/schedule-service/api/schedule/**").authenticated()
+
                         // Schedule Service - Admin only endpoints
                         .pathMatchers(HttpMethod.POST, "/schedule-service/api/schedule").hasRole("Admin")
                         .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedules").hasRole("Admin")
                         .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedule/airport/**").hasRole("Admin")
                         .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedule/flight/**").hasRole("Admin")
+                        .pathMatchers(HttpMethod.GET,"/schedule-service/api/all-schedules").hasRole("Admin")
 
                         // Default policy - require authentication for any other endpoints
                         .anyExchange().authenticated())
