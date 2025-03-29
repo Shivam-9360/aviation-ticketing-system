@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class ScheduleRequest {
+    String id;
     String flightId;
     int sourceAirport;
     int destinationAirport;

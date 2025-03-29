@@ -35,6 +35,14 @@ public class SecurityConfig {
 
                         .pathMatchers("/ws/**").permitAll()
 
+                        // Open actuators to admins
+                        .pathMatchers("/auth-service/actuator/**").hasRole("Admin")
+                        .pathMatchers("/user-service/actuator/**").hasRole("Admin")
+                        .pathMatchers("/flight-service/actuator/**").hasRole("Admin")
+                        .pathMatchers("/airport-service/actuator/**").hasRole("Admin")
+                        .pathMatchers("/schedule-service/actuator/**").hasRole("Admin")
+
+
                         // Explicitly permit OPTIONS requests for CORS preflight
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
@@ -84,7 +92,7 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedule/airport/**").hasRole("Admin")
                         .pathMatchers(HttpMethod.DELETE, "/schedule-service/api/schedule/flight/**").hasRole("Admin")
                         .pathMatchers(HttpMethod.GET,"/schedule-service/api/all-schedules").hasRole("Admin")
-
+                        .pathMatchers(HttpMethod.PUT,"/schedule-service/api/schedule").hasRole("Admin")
                         // Default policy - require authentication for any other endpoints
                         .anyExchange().authenticated())
 

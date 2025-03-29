@@ -86,7 +86,13 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     @Override
     public ScheduleResponse updateSchedule(ScheduleRequest scheduleRequest) {
-        return null;
+        Schedule existingSchedule = scheduleRepository.findById(scheduleRequest.getId())
+                .orElseThrow(() -> new NoScheduleFoundException("Cannot update. Schedule not found with ID: " + scheduleRequest.getId()));
+        existingSchedule.setFlightId(scheduleRequest.getFlightId());
+        existingSchedule.setSourceAirportId(scheduleRequest.getSourceAirport());
+        existingSchedule.setDestinationAirportId(scheduleRequest.getDestinationAirport());
+        existingSchedule.setDateTime(scheduleRequest.getDateTime());
+        return scheduleMapper.mapToDTO(scheduleRepository.save(existingSchedule),false);
     }
 
     @Override

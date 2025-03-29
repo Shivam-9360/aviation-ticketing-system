@@ -19,7 +19,7 @@ public class ScheduleController {
     public final ScheduleService scheduleService;
 
     @PostMapping("/schedule")
-    public ResponseEntity<DTO<ScheduleResponse>> createFlight(@RequestBody ScheduleRequest schedule){
+    public ResponseEntity<DTO<ScheduleResponse>> createSchedule(@RequestBody ScheduleRequest schedule){
         ScheduleResponse createdSchedule = scheduleService.createSchedule(schedule);
         return ResponseEntity.ok(DTO.<ScheduleResponse>builder()
                         .success(true)
@@ -27,7 +27,15 @@ public class ScheduleController {
                         .data(createdSchedule)
                 .build());
     }
-
+    @PutMapping("/schedule")
+    public ResponseEntity<DTO<ScheduleResponse>> updateSchedule(@RequestBody ScheduleRequest schedule){
+        ScheduleResponse createdSchedule = scheduleService.updateSchedule(schedule);
+        return ResponseEntity.ok(DTO.<ScheduleResponse>builder()
+                .success(true)
+                .message("Schedule Updated")
+                .data(createdSchedule)
+                .build());
+    }
     @GetMapping("/schedules")
     public ResponseEntity<DTO<List<ScheduleResponse>>> getSchedules(
             @RequestParam(name = "start") String start,
