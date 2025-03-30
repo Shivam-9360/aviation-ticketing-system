@@ -1,6 +1,7 @@
 package com.flight.booking.schedule.mapper;
 
 import com.flight.booking.schedule.dto.*;
+import com.flight.booking.schedule.enums.SeatStatus;
 import com.flight.booking.schedule.feign.AirportServiceCommunicator;
 import com.flight.booking.schedule.feign.FlightServiceCommunicator;
 import com.flight.booking.schedule.dto.*;
@@ -72,7 +73,7 @@ public class ScheduleMapper {
             for (int i = 0; i < flightResponse.getData().getTotalSeats(); i++) {
                 seats.add(Seat.builder()
                         .seatNumber(i + 1)
-                        .isBooked(false)
+                        .status(SeatStatus.VACANT)
                         .build());
             }
 

@@ -18,6 +18,19 @@ import java.util.List;
 public class ScheduleController {
     public final ScheduleService scheduleService;
 
+    @PostMapping("/{scheduleId}/select-seat/{seatNumber}")
+    public ResponseEntity<DTO<String>> selectSeat(
+            @PathVariable String scheduleId,
+            @PathVariable int seatNumber) {
+
+        scheduleService.selectSeat(scheduleId, seatNumber);
+
+        return ResponseEntity.ok(DTO.<String>builder()
+                .success(true)
+                .message("Seat selected successfully")
+                .data("Seat " + seatNumber + " is now pending.")
+                .build());
+    }
     @PostMapping("/schedule")
     public ResponseEntity<DTO<ScheduleResponse>> createSchedule(@RequestBody ScheduleRequest schedule){
         ScheduleResponse createdSchedule = scheduleService.createSchedule(schedule);

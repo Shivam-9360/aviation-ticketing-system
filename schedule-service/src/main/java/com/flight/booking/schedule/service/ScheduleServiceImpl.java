@@ -3,13 +3,18 @@ package com.flight.booking.schedule.service;
 import com.flight.booking.schedule.dto.*;
 import com.flight.booking.schedule.dto.ScheduleRequest;
 import com.flight.booking.schedule.dto.ScheduleResponse;
+import com.flight.booking.schedule.enums.SeatStatus;
+import com.flight.booking.schedule.exception.SeatAlreadyBookedException;
+import com.flight.booking.schedule.exception.SeatNotFoundException;
 import com.flight.booking.schedule.feign.FlightServiceCommunicator;
 import com.flight.booking.schedule.model.Schedule;
 import com.flight.booking.schedule.exception.NoScheduleFoundException;
 import com.flight.booking.schedule.mapper.ScheduleMapper;
+import com.flight.booking.schedule.model.Seat;
 import com.flight.booking.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -94,7 +99,25 @@ public class ScheduleServiceImpl implements ScheduleService{
         existingSchedule.setDateTime(scheduleRequest.getDateTime());
         return scheduleMapper.mapToDTO(scheduleRepository.save(existingSchedule),false);
     }
+    public void selectSeat(String scheduleId, int seatNumber) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new NoScheduleFoundException("Schedule not found"));
 
+        // Find the seat
+        Seat seat = schedule.getSeats().stream()
+                .filter(s -> s.getSeatNumber() == seatNumber)
+                .findFirst()
+                .orElseThrow(() -> new SeatNotFoundException("Seat not found"));
+
+        // Check if seat is available
+        if (seat.getStatus() != SeatStatus.VACANT) {
+            throw new SeatAlreadyBookedException("Seat is already selected or booked.");
+        }
+
+        // Set seat status to PENDING
+        seat.setStatus(SeatStatus.PENDING);
+        scheduleRepository.save(schedule);
+    }
     @Override
     public void deleteByAirportId(int id) {
         scheduleRepository.deleteBySourceAirportIdOrDestinationAirportId(id,id);
@@ -102,7 +125,13 @@ public class ScheduleServiceImpl implements ScheduleService{
 
     @Override
     public void deleteByFlightId(String id) {
-        System.out.println("here");
         scheduleRepository.deleteByFlightId(id);
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Autowired
+    public void deletePastSchedules() {
+        Instant now = Instant.now();
+        scheduleRepository.deleteByDateTimeBefore(now);
     }
 }
