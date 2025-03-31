@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class ScheduleController {
-    public final ScheduleService scheduleService;
+    private final ScheduleService scheduleService;
 
     @PostMapping("/schedule")
     public ResponseEntity<DTO<ScheduleResponse>> createSchedule(@RequestBody ScheduleRequest schedule){

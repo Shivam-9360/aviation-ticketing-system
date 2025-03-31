@@ -1,13 +1,13 @@
 spring:
   application:
-    name: "booking-service"
+    name: "payment-service"
 server:
   port: 9006
 
 razorpay:
-  key:
-    id: "rzp_test_1DP5mmOlF5G5aa"
-    secret: "XfYhG5J8vY7f9"
+  api:
+    key: "rzp_test_x0joxYG34sLh5M"
+    secret: "3xRd6oiHPPXELe8DrGB7IADj"
 
 eureka:
   client:

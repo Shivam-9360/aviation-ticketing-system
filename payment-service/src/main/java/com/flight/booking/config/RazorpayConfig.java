@@ -1,13 +1,13 @@
 package com.flight.booking.config;
 
 import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RazorpayConfig {
-
     @Value("${razorpay.api.key}")
     private String RAZORPAY_API_KEY;
 
@@ -15,7 +15,7 @@ public class RazorpayConfig {
     private String RAZORPAY_API_SECRET;
 
     @Bean
-    public RazorpayClient razorpayClient() throws Exception {
-        return new RazorpayClient(RAZORPAY_API_KEY, RAZORPAY_API_SECRET);
+    public RazorpayClient razorpayClient() throws RazorpayException {
+        return new RazorpayClient(RAZORPAY_API_SECRET, RAZORPAY_API_KEY);
     }
 }
