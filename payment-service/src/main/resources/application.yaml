@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: "booking-service"
+server:
+  port: 9006
+
+razorpay:
+  key:
+    id: "rzp_test_1DP5mmOlF5G5aa"
+    secret: "XfYhG5J8vY7f9"
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+    ip-address: 127.0.0.1
+    hostname: localhost
+    instance-id: ${spring.application.name}:${server.port}
