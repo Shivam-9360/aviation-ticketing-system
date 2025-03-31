@@ -1,4 +1,5 @@
-package com.flight.booking.flight.model;
+package com.flight.booking.schedule.model;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -132,6 +132,7 @@ public class ScheduleServiceImpl implements ScheduleService{
     @Autowired
     public void deletePastSchedules() {
         Instant now = Instant.now();
-        scheduleRepository.deleteByDateTimeBefore(now);
+        System.out.println("🗑️ Cleaning up past schedules at: " + now);
+        scheduleRepository.cleanSchedules(now);
     }
 }

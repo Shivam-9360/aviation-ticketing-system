@@ -11,6 +11,12 @@ spring:
           predicates:
             - Path=/ws/user-updates
 
+        - id: schedule-service-websocket
+          uri: ws://localhost:9004
+          predicates:
+            - Path=/ws/seats/**
+
+
         - id: airport-service
           uri: lb://airport-service
           predicates:

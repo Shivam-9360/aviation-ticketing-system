@@ -1,5 +1,6 @@
 package com.flight.booking.schedule.dto;
 
+import com.flight.booking.schedule.model.SeatType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,4 +20,5 @@ public class FlightResponse {
     private String company;
     private int totalSeats;
     private int bookedSeats;
+    private List<SeatType> seatType;
 }
