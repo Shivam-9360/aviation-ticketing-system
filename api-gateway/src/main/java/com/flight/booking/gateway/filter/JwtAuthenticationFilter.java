@@ -4,6 +4,7 @@ import com.flight.booking.gateway.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
@@ -34,9 +35,7 @@ public class JwtAuthenticationFilter implements WebFilter {
             if (jwtService.validateToken(token) && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails user = jwtService.extractUserDetails(token);
 
-                List<SimpleGrantedAuthority> authorities = user.getAuthorities().stream().map((role) -> new SimpleGrantedAuthority("ROLE_" + role)).toList();
-
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, authorities);
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
                 SecurityContext context = new SecurityContextImpl(authenticationToken);
 
@@ -44,7 +43,7 @@ public class JwtAuthenticationFilter implements WebFilter {
                 ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
                         .header("email", user.getUsername())
                         .header("role", user.getAuthorities().stream().findFirst()
-                            .map(auth -> auth.getAuthority()).orElse(""))
+                            .map(GrantedAuthority::getAuthority).orElse(""))
                         .build();
 
                 // Create a new ServerWebExchange with the modified request

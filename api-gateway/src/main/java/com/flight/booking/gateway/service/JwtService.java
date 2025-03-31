@@ -1,9 +1,10 @@
 package com.flight.booking.gateway.service;
 
-import com.flight.booking.gateway.entity.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
 
 @Component
@@ -34,7 +36,7 @@ public class JwtService {
     }
 
     public UserDetails extractUserDetails(String token) {
-        return new UserDetailsImpl(extractEmail(token), null, extractRole(token));
+        return new User(extractEmail(token), "", List.of(new SimpleGrantedAuthority(extractRole(token))));
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver)  {
