@@ -55,7 +55,7 @@ public class ScheduleMapper {
 
     }
 
-    public  Schedule mapToModel(ScheduleRequest scheduleRequest) {
+    public Schedule mapToModel(ScheduleRequest scheduleRequest) {
 
         try {
             DTO<FlightResponse> flightResponse = flightServiceCommunicator.getFlightById(scheduleRequest.getFlightId());

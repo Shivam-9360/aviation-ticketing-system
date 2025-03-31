@@ -26,21 +26,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService{
-
-    @Autowired
-    public ScheduleRepository scheduleRepository;
-
-    @Autowired
-    public FlightServiceCommunicator flightServiceCommunicator;
-
+    private final ScheduleRepository scheduleRepository;
     private final ScheduleMapper scheduleMapper;
 
     @Override
     public ScheduleResponse createSchedule(ScheduleRequest schedule) {
-
         return scheduleMapper
                 .mapToDTO(scheduleRepository.save(scheduleMapper.mapToModel(schedule)),false);
-
     }
 
     @Override
@@ -99,25 +91,7 @@ public class ScheduleServiceImpl implements ScheduleService{
         existingSchedule.setDateTime(scheduleRequest.getDateTime());
         return scheduleMapper.mapToDTO(scheduleRepository.save(existingSchedule),false);
     }
-    public void selectSeat(String scheduleId, int seatNumber) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new NoScheduleFoundException("Schedule not found"));
 
-        // Find the seat
-        Seat seat = schedule.getSeats().stream()
-                .filter(s -> s.getSeatNumber() == seatNumber)
-                .findFirst()
-                .orElseThrow(() -> new SeatNotFoundException("Seat not found"));
-
-        // Check if seat is available
-        if (seat.getStatus() != SeatStatus.VACANT) {
-            throw new SeatAlreadyBookedException("Seat is already selected or booked.");
-        }
-
-        // Set seat status to PENDING
-        seat.setStatus(SeatStatus.PENDING);
-        scheduleRepository.save(schedule);
-    }
     @Override
     public void deleteByAirportId(int id) {
         scheduleRepository.deleteBySourceAirportIdOrDestinationAirportId(id,id);
