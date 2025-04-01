@@ -36,7 +36,7 @@ public class JwtService {
     }
 
     public UserDetails extractUserDetails(String token) {
-        return new User(extractEmail(token), "", List.of(new SimpleGrantedAuthority(extractRole(token))));
+        return new User(extractEmail(token), "", List.of(new SimpleGrantedAuthority("ROLE_"+extractRole(token))));
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver)  {
