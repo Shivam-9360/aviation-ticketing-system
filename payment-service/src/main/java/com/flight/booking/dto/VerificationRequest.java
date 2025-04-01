@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VerificationRequest {
-    private String orderId;
-    private String paymentId;
-    private String razorpaySignature;
+    private String razorpay_order_id;
+    private String razorpay_payment_id;
+    private String razorpay_signature;
 }

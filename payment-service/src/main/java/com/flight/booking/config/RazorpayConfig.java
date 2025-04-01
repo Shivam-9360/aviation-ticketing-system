@@ -16,6 +16,6 @@ public class RazorpayConfig {
 
     @Bean
     public RazorpayClient razorpayClient() throws RazorpayException {
-        return new RazorpayClient(RAZORPAY_API_SECRET, RAZORPAY_API_KEY);
+        return new RazorpayClient(RAZORPAY_API_KEY, RAZORPAY_API_SECRET);
     }
 }

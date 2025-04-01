@@ -41,9 +41,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public boolean verifyPayment(VerificationRequest verificationRequest) {
-        String payload = verificationRequest.getOrderId() + '|' + verificationRequest.getPaymentId();
+        String payload = verificationRequest.getRazorpay_order_id() + '|' + verificationRequest.getRazorpay_payment_id();
         try {
-            return Utils.verifySignature(payload, verificationRequest.getRazorpaySignature(), RAZORPAY_API_SECRET);
+            return Utils.verifySignature(payload, verificationRequest.getRazorpay_signature(), RAZORPAY_API_SECRET);
         } catch (Exception e) {
             return false;
         }
