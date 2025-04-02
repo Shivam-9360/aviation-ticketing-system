@@ -25,7 +25,6 @@ public class BookingMapper {
                 .scheduleId(booking.getScheduleId())
                 .seatNumbers(booking.getSeatNumbers())
                 .amount(booking.getAmount())
-                .status(booking.getStatus())
                 .dateTime(booking.getDateTime())
                 .build();
     }

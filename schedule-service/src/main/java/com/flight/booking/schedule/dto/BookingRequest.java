@@ -1,16 +1,16 @@
-package com.flight.booking.dto;
+package com.flight.booking.schedule.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.List;
 
 @Data
-@Builder
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class PaymentRequest {
-    private int userId;
-    private double amount;
-    private String currency;
+public class BookingRequest {
+    String scheduleId;
+    List<Integer> seatNumbers;
 }

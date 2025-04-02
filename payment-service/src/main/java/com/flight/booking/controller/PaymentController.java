@@ -22,6 +22,8 @@ public class PaymentController {
     @PostMapping("/order")
     public ResponseEntity<DTO<PaymentResponse>> createOrder(@RequestBody PaymentRequest paymentRequest) throws RazorpayException {
         PaymentResponse paymentResponse = paymentService.createOrder(paymentRequest);
+        System.out.println(paymentRequest.toString());
+        System.out.println(paymentResponse.toString());
         return ResponseEntity.ok(DTO.<PaymentResponse>builder()
                 .success(true)
                 .message("Order Created")

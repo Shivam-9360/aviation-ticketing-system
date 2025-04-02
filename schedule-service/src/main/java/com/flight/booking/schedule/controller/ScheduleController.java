@@ -1,5 +1,6 @@
 package com.flight.booking.schedule.controller;
 
+import com.flight.booking.schedule.dto.BookingRequest;
 import com.flight.booking.schedule.dto.DTO;
 import com.flight.booking.schedule.dto.ScheduleRequest;
 import com.flight.booking.schedule.dto.ScheduleResponse;
@@ -109,5 +110,15 @@ public class ScheduleController {
                 .message("Schedule Deleted Successfully")
                 .data(null)
                 .build());
+    }
+
+    @PostMapping("/validate-booking")
+    public DTO<String> validateBookingRequest(@RequestBody BookingRequest bookingRequest){
+        boolean isValid = scheduleService.validateBookingRequest(bookingRequest);
+        return DTO.<String>builder()
+                .success(isValid)
+                .data(null)
+                .message(isValid?"Booking Request Valid":"Booking Request Invalid")
+                .build();
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 public class BookingResponse {
     private String id;
     private String scheduleId;
-    private String userId;
+    private int userId;
     private List<Integer> seatNumbers;
     private Integer amount;
     private String status;

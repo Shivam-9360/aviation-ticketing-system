@@ -27,14 +27,12 @@ public class PaymentServiceImpl implements PaymentService {
         JSONObject options = new JSONObject();
         options.put("amount", paymentRequest.getAmount() * 100);
         options.put("currency", paymentRequest.getCurrency());
-        options.put("receipt", paymentRequest.getUserId());
 
         Order razorPayOrder = razorpayClient.orders.create(options);
         return PaymentResponse.builder()
                 .userId(paymentRequest.getUserId())
                 .amount(paymentRequest.getAmount())
                 .currency(paymentRequest.getCurrency())
-                .status(razorPayOrder.get("status").toString())
                 .razorpayOrderId(razorPayOrder.get("id").toString())
                 .build();
     }

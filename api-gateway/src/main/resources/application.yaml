@@ -72,6 +72,28 @@ spring:
                 name: yourServiceCircuitBreaker
                 fallbackUri: forward:/health/schedule-service
 
+        - id: booking-service
+          uri: lb://booking-service
+          predicates:
+            - Path=/booking-service/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: yourServiceCircuitBreaker
+                fallbackUri: forward:/health/booking-service
+
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/payment-service/**
+          filters:
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: yourServiceCircuitBreaker
+                fallbackUri: forward:/health/payment-service
+
 server:
   port: 8080
 

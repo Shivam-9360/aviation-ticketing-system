@@ -1,5 +1,6 @@
 package com.flight.booking.schedule.service;
 
+import com.flight.booking.schedule.dto.BookingRequest;
 import com.flight.booking.schedule.dto.ScheduleRequest;
 import com.flight.booking.schedule.dto.ScheduleResponse;
 
@@ -16,4 +17,5 @@ public interface ScheduleService {
     ScheduleResponse updateSchedule(ScheduleRequest scheduleRequest);
     void deleteByAirportId(int id);
     void deleteByFlightId(String id);
+    boolean validateBookingRequest(BookingRequest bookingRequest);
 }

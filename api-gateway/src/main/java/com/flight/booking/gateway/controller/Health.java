@@ -36,4 +36,14 @@ public class Health {
         return ResponseEntity.status(HttpStatus.OK).body(
                 HealthResponse.builder().status("DOWN").build());
     }
+    @GetMapping("payment-service")
+    public ResponseEntity<HealthResponse> payment() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                HealthResponse.builder().status("DOWN").build());
+    }
+    @GetMapping("booking-service")
+    public ResponseEntity<HealthResponse> booking() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                HealthResponse.builder().status("DOWN").build());
+    }
 }

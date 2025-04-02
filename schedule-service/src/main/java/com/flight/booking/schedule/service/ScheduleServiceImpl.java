@@ -12,6 +12,7 @@ import com.flight.booking.schedule.exception.NoScheduleFoundException;
 import com.flight.booking.schedule.mapper.ScheduleMapper;
 import com.flight.booking.schedule.model.Seat;
 import com.flight.booking.schedule.repository.ScheduleRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -102,8 +103,37 @@ public class ScheduleServiceImpl implements ScheduleService{
         scheduleRepository.deleteByFlightId(id);
     }
 
+    @Override
+    public boolean validateBookingRequest(BookingRequest bookingRequest) {
+        Schedule schedule = scheduleRepository.findById(bookingRequest.getScheduleId()).orElse(null);
+        if(schedule == null){
+            return false;
+        }
+
+        List<Seat> seats = schedule.getSeats();
+        List<Integer> requestedSeatNumbers = bookingRequest.getSeatNumbers();
+
+        for (Integer seatNumber : requestedSeatNumbers) {
+            // Find the seat with the requested number
+            boolean seatFound = false;
+            for (Seat seat : seats) {
+                if (seat.getSeatNumber() == seatNumber) {
+                    seatFound = true;
+                    // Check if the seat is VACANT
+                    if (seat.getStatus() != SeatStatus.VACANT) {
+                        return false; // Seat is not VACANT
+                    }
+                    break;
+                }
+            }
+            if (!seatFound) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Scheduled(cron = "0 0 0 * * ?")
-    @Autowired
     public void deletePastSchedules() {
         Instant now = Instant.now();
         System.out.println("🗑️ Cleaning up past schedules at: " + now);

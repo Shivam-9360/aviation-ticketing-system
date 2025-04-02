@@ -19,10 +19,10 @@ public class Booking {
     @Id
     private String id;
     private String scheduleId;
-    private String userId;
+    private int userId;
     private List<Integer> seatNumbers;
     private Integer amount;
-    private String status;
     private Instant dateTime;
     private String razorPayOrderId;
+    private String razorpayPaymentId;
 }

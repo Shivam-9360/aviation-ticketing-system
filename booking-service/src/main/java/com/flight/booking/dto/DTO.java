@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentRequest {
-    private int userId;
-    private double amount;
-    private String currency;
+@Builder
+public class DTO <T>{
+    private String message;
+    private boolean success;
+    T data;
 }

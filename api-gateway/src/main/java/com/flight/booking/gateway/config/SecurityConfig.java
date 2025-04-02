@@ -41,7 +41,11 @@ public class SecurityConfig {
                         .pathMatchers("/flight-service/actuator/**").hasRole("Admin")
                         .pathMatchers("/airport-service/actuator/**").hasRole("Admin")
                         .pathMatchers("/schedule-service/actuator/**").hasRole("Admin")
+                        .pathMatchers("/payment-service/actuator/**").hasRole("Admin")
+                        .pathMatchers("/booking-service/actuator/**").hasRole("Admin")
 
+                        .pathMatchers("/booking-service/api/**").authenticated()
+                        .pathMatchers("/payment-service/api/**").authenticated()
 
                         // Explicitly permit OPTIONS requests for CORS preflight
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()

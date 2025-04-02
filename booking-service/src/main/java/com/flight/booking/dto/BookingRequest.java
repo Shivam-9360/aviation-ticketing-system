@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class BookingRequest {
     private String scheduleId;
-    private String userId;
+    private int userId;
     private List<Integer> seatNumbers;
     private Integer amount;
 }
