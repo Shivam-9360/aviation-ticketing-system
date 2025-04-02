@@ -9,4 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface ScheduleServiceCommunicator {
     @PostMapping("/api/validate-booking")
     DTO<String> validateBookingRequest(BookingRequest bookingRequest);
+    @PostMapping("/api/book-seats")
+    DTO<String> bookSeats(BookingRequest bookingRequest);
 }

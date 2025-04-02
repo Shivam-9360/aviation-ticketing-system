@@ -18,4 +18,5 @@ public interface ScheduleService {
     void deleteByAirportId(int id);
     void deleteByFlightId(String id);
     boolean validateBookingRequest(BookingRequest bookingRequest);
+    boolean bookSeats(BookingRequest bookingRequest);
 }

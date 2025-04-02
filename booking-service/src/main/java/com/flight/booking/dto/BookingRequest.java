@@ -16,4 +16,6 @@ public class BookingRequest {
     private int userId;
     private List<Integer> seatNumbers;
     private Integer amount;
+    private String razorpayOrderId;
+    private String razorpayPaymentId;
 }

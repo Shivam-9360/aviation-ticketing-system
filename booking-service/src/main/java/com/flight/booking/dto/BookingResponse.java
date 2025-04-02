@@ -20,5 +20,5 @@ public class BookingResponse {
     private Integer amount;
     private String status;
     private Instant dateTime;
-    private String razorPayOrderId;
+    private String razorpayPaymentId;
 }

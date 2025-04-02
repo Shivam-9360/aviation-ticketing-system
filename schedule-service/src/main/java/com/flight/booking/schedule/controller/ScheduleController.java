@@ -121,4 +121,14 @@ public class ScheduleController {
                 .message(isValid?"Booking Request Valid":"Booking Request Invalid")
                 .build();
     }
+
+    @PostMapping("/book-seats")
+    public DTO<String> bookSeats(@RequestBody BookingRequest bookingRequest){
+        boolean isBooked = scheduleService.bookSeats(bookingRequest);
+        return DTO.<String>builder()
+                .success(isBooked)
+                .data(null)
+                .message(isBooked?"Booking Successful":"Booking Failed")
+                .build();
+    }
 }

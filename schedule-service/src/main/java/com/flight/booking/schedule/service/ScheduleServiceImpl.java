@@ -12,16 +12,19 @@ import com.flight.booking.schedule.exception.NoScheduleFoundException;
 import com.flight.booking.schedule.mapper.ScheduleMapper;
 import com.flight.booking.schedule.model.Seat;
 import com.flight.booking.schedule.repository.ScheduleRepository;
+import com.flight.booking.schedule.websocket.SeatWebSocketHandler;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +32,7 @@ import java.util.List;
 public class ScheduleServiceImpl implements ScheduleService{
     private final ScheduleRepository scheduleRepository;
     private final ScheduleMapper scheduleMapper;
+    private final SeatWebSocketHandler seatWebSocketHandler;
 
     @Override
     public ScheduleResponse createSchedule(ScheduleRequest schedule) {
@@ -130,6 +134,45 @@ public class ScheduleServiceImpl implements ScheduleService{
                 return false;
             }
         }
+        return true;
+    }
+
+    @Override
+    public boolean bookSeats(BookingRequest bookingRequest) {
+        Schedule schedule = scheduleRepository.findById(bookingRequest.getScheduleId()).orElse(null);
+        if(schedule == null){
+            return false;
+        }
+
+        List<Seat> seats = schedule.getSeats();
+        List<Integer> requestedSeatNumbers = bookingRequest.getSeatNumbers();
+        List<Integer> bookedSeats = new ArrayList<>();
+
+        for (Integer seatNumber : requestedSeatNumbers) {
+            // Find the seat with the requested number
+            boolean seatFound = false;
+            for (Seat seat : seats) {
+                if (seat.getSeatNumber() == seatNumber) {
+                    seatFound = true;
+                    seat.setStatus(SeatStatus.BOOKED);
+                    bookedSeats.add(seatNumber);
+                    break;
+                }
+            }
+            if (!seatFound) {
+                return false;
+            }
+        }
+        scheduleRepository.save(schedule);
+        // Broadcast booked seats after successful booking
+        if (!bookedSeats.isEmpty()) {
+            try {
+                seatWebSocketHandler.broadcastBookedSeats(bookingRequest.getScheduleId(), bookedSeats);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         return true;
     }
 

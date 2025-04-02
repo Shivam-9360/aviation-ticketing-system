@@ -135,4 +135,30 @@ public class SeatWebSocketHandler extends TextWebSocketHandler {
         String path = session.getUri().getPath();
         return path.substring(path.lastIndexOf("/") + 1); // Extract scheduleId from URL
     }
+    public void broadcastBookedSeats(String scheduleId, List<Integer> bookedSeats) throws IOException {
+        Set<WebSocketSession> sessions = scheduleSessions.get(scheduleId);
+        if (sessions == null) return;
+        Map<String, Set<Integer>> scheduleBlockedSeats = blockedSeats.get(scheduleId);
+        if (scheduleBlockedSeats != null) {
+            for (Set<Integer> seatSet : scheduleBlockedSeats.values()) {
+                seatSet.removeAll(bookedSeats); // ✅ Remove booked seats from each session's blocked list
+            }
+
+            // ✅ Clean up empty session entries
+            scheduleBlockedSeats.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+
+            // ✅ Remove the schedule entry if no more blocked seats exist
+            if (scheduleBlockedSeats.isEmpty()) {
+                blockedSeats.remove(scheduleId);
+            }
+        }
+        String jsonSeats = bookedSeats.toString();
+        String message = "{\"type\":\"BOOKED_SEATS\",\"seats\": " + jsonSeats + "}";
+
+        for (WebSocketSession session : sessions) {
+            if (session.isOpen()) {
+                session.sendMessage(new TextMessage(message));
+            }
+        }
+    }
 }
