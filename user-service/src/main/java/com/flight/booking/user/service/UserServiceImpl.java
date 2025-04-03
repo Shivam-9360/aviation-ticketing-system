@@ -3,6 +3,7 @@ package com.flight.booking.user.service;
 import com.flight.booking.user.dto.UserRequest;
 import com.flight.booking.user.dto.UserResponse;
 import com.flight.booking.user.entity.User;
+import com.flight.booking.user.enums.Role;
 import com.flight.booking.user.exception.NoUsersFoundException;
 import com.flight.booking.user.exception.UserAlreadyExistsException;
 import com.flight.booking.user.exception.UserNotFoundException;
@@ -27,6 +28,11 @@ public class UserServiceImpl implements UserService{
     public UserResponse createUser(UserRequest user) {
         if(userRepository.findByEmail(user.getEmail()).isPresent()){
             throw new UserAlreadyExistsException("User with email " + user.getEmail() + " already exists");
+        }
+        if(userRepository.findAll().isEmpty()){
+            user.setRole(Role.Admin);
+        } else {
+            user.setRole(Role.User);
         }
         return userMapper.mapToDTO(userRepository.save(userMapper.mapToModel(user)));
     }
@@ -53,12 +59,12 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserResponse updateUser(UserRequest user) {
+    public UserResponse updateUserRole(UserRequest user) {
         User existingUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserNotFoundException("Cannot update. User not found with ID: " + user.getId()));
 
-        existingUser.setName(user.getName());
-        existingUser.setEmail(user.getEmail());
+        existingUser.setName(existingUser.getName());
+        existingUser.setEmail(existingUser.getEmail());
         existingUser.setPassword(existingUser.getPassword());
         existingUser.setRole(user.getRole());
 
@@ -67,6 +73,19 @@ public class UserServiceImpl implements UserService{
         return userSaved;
     }
 
+    public UserResponse updateUser(UserRequest user){
+        User existingUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException("Cannot update. User not found with ID: " + user.getId()));
+
+        existingUser.setName(user.getName());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setPassword(existingUser.getPassword());
+        existingUser.setRole(existingUser.getRole());
+
+        UserResponse userSaved = userMapper.mapToDTO(userRepository.save(existingUser));
+        userWebSocketHandler.sendUserUpdate(existingUser, false);
+        return userSaved;
+    }
 
     @Override
     public void deleteUserById(int userId) {

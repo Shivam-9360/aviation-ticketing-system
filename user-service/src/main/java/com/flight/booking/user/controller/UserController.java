@@ -65,6 +65,15 @@ public class UserController {
                 .data(updateUser)
                 .build());
     }
+    @PutMapping("/user-role")
+    public ResponseEntity<DTO<UserResponse>> updateUserRole(@RequestBody UserRequest user){
+        UserResponse updateUser = service.updateUserRole(user);
+        return ResponseEntity.status(201).body(DTO.<UserResponse>builder()
+                .success(true)
+                .message("User Created Successfully !")
+                .data(updateUser)
+                .build());
+    }
 
     @DeleteMapping("/user/{id}")
     private ResponseEntity<DTO<String>> deleteUserById(@PathVariable int id){
