@@ -11,4 +11,5 @@ public interface BookingService {
     public PaymentResponse getOrderId(BookingRequest bookingRequest);
     public BookingResponse createBooking(BookingRequest bookingRequest);
     public List<BookingResponse> getAllBookings();
+    public List<BookingResponse> getBookingByUserId(int userId);
 }

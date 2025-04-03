@@ -36,6 +36,17 @@ public class BookingController {
                 .build());
     }
 
+    //Get Booking By User Id
+    @GetMapping("/bookings/user/{userId}")
+    public ResponseEntity<DTO<List<BookingResponse>>> getBookingByUserId(@PathVariable int userId) {
+        List<BookingResponse> bookings =  bookingService.getBookingByUserId(userId);
+        return ResponseEntity.ok().body(DTO.<List<BookingResponse>>builder()
+                        .data(bookings)
+                        .message("Bookings Fetched")
+                        .success(true)
+                .build());
+    }
+
     //Get All Bookings
     @GetMapping("/bookings")
     public ResponseEntity<DTO<List<BookingResponse>>> getAllBookings() {

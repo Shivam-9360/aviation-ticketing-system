@@ -64,6 +64,7 @@ public class SecurityConfig {
                         // User Service - User/Admin endpoints (handled by controller-level checks)
                         .pathMatchers(HttpMethod.GET, "/user-service/api/user/**").authenticated()
                         .pathMatchers(HttpMethod.PUT, "/user-service/api/user").authenticated()
+                        .pathMatchers(HttpMethod.PUT, "/user-service/api/user-role").hasRole("Admin")
 
                         // Flight Service - Public endpoints
                         .pathMatchers(HttpMethod.GET, "/flight-service/api/flights").permitAll()

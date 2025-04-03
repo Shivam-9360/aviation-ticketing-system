@@ -59,6 +59,12 @@ public class BookingServiceImpl implements BookingService {
         return  bookings.stream().map(bookingMapper::mapToDTO).toList();
     }
 
+    @Override
+    public List<BookingResponse> getBookingByUserId(int userId) {
+        List<Booking> bookings = bookingRepository.findByUserId(userId);
+        return  bookings.stream().map(bookingMapper::mapToDTO).toList();
+    }
+
     public boolean validateBookingRequest(BookingRequest bookingRequest) {
         try {
             return scheduleServiceCommunicator.validateBookingRequest(bookingRequest).isSuccess();
