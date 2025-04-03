@@ -11,8 +11,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class JwtAccessDeniedHandler implements ServerAccessDeniedHandler {
@@ -21,7 +19,6 @@ public class JwtAccessDeniedHandler implements ServerAccessDeniedHandler {
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, AccessDeniedException denied) {
         DTO<String> customResponse = new DTO<>(false, "Only Admins can Access this resource", null);
-
 
         byte[] bytes;
         try {

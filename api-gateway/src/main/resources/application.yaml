@@ -1,6 +1,7 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+    web-application-type: reactive
   application:
     name: "api-gateway"
   cloud:
@@ -16,17 +17,12 @@ spring:
           predicates:
             - Path=/ws/seats/**
 
-
         - id: airport-service
           uri: lb://airport-service
           predicates:
             - Path=/airport-service/**
           filters:
             - StripPrefix=1
-            - name: CircuitBreaker
-              args:
-                name: yourServiceCircuitBreaker
-                fallbackUri: forward:/health/airport-service
 
         - id: auth-service
           uri: lb://auth-service
@@ -34,10 +30,6 @@ spring:
             - Path=/auth-service/**
           filters:
             - StripPrefix=1
-            - name: CircuitBreaker
-              args:
-                name: yourServiceCircuitBreaker
-                fallbackUri: forward:/health/auth-service
 
         - id: flight-service
           uri: lb://flight-service
@@ -45,10 +37,6 @@ spring:
             - Path=/flight-service/**
           filters:
             - StripPrefix=1
-            - name: CircuitBreaker
-              args:
-                name: yourServiceCircuitBreaker
-                fallbackUri: forward:/health/flight-service
 
         - id: user-service
           uri: lb://user-service
@@ -56,21 +44,13 @@ spring:
             - Path=/user-service/**
           filters:
             - StripPrefix=1
-            - name: CircuitBreaker
-              args:
-                name: yourServiceCircuitBreaker
-                fallbackUri: forward:/health/user-service
 
         - id: schedule-service
           uri: lb://schedule-service
           predicates:
             - Path=/schedule-service/**
           filters:
-            - StripPrefix=1
-            - name: CircuitBreaker
-              args:
-                name: yourServiceCircuitBreaker
-                fallbackUri: forward:/health/schedule-service
+              - StripPrefix=1
 
         - id: booking-service
           uri: lb://booking-service
@@ -78,10 +58,6 @@ spring:
             - Path=/booking-service/**
           filters:
             - StripPrefix=1
-            - name: CircuitBreaker
-              args:
-                name: yourServiceCircuitBreaker
-                fallbackUri: forward:/health/booking-service
 
         - id: payment-service
           uri: lb://payment-service
@@ -89,10 +65,6 @@ spring:
             - Path=/payment-service/**
           filters:
             - StripPrefix=1
-            - name: CircuitBreaker
-              args:
-                name: yourServiceCircuitBreaker
-                fallbackUri: forward:/health/payment-service
 
 server:
   port: 8080
@@ -106,20 +78,5 @@ eureka:
     ip-address: 127.0.0.1
     hostname: localhost
     instance-id: ${spring.application.name}:${server.port}
-
-resilience4j:
-  circuitbreaker:
-    instances:
-      yourServiceCircuitBreaker:
-        slidingWindowSize: 10
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
-        permittedNumberOfCallsInHalfOpenState: 5
-        minimumNumberOfCalls: 5
-        automaticTransitionFromOpenToHalfOpenEnabled: true
-        recordExceptions:
-          - org.springframework.web.client.HttpServerErrorException
-          - java.util.concurrent.TimeoutException
-          - java.io.IOException
 
 JWT_PUBLIC_SECRET: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqfni37IKzokPkRjL6ekyGgwHiGcnLIAHhgoWddyraSRxNw4VfBNSFUaLxT9DMiNCwH614ALasV6WNJwtiPXwPVTb8U6fAdKASdK0zd9jZaQeGn2eU+u552g22OimrQGuqruTv16NLpEduTiPK4zM+RLm8jCqhZiZhwmiFfCyciPhBfYnBYQ7+pbldEYtw072mX3UZuzCNNtNF/IDnkoj4scA04MMmmhtjN4F+pyud4jksnrmaR8oJvC3lsLplL7minIacGlkfBA6wqfa3jz8EfEtgBYwWp6U/yoHTQ/9mt5bh/EHwxLIjs4cw67kRcTnrOQtH4N7uAoWiX9EqvIV2wIDAQAB"
