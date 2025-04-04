@@ -19,4 +19,6 @@ public class ScheduleResponse {
     AirportResponse sourceAirportResponse;
     AirportResponse destinationAirportResponse;
     List<Seat> seats;
+    int bookedSeats;
+
 }

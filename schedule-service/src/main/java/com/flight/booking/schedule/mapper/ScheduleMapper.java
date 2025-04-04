@@ -32,6 +32,12 @@ public class ScheduleMapper {
         if(!sourceAirport.isSuccess() || !destinationAirport.isSuccess()){
             throw new CommunicationFailedException("Airports Not Found");
         }
+
+        long bookedSeats = schedule.getSeats()
+                .stream()
+                .filter(seat -> seat.getStatus() == SeatStatus.BOOKED)
+                .count();
+
         if(isById){
             return ScheduleResponse
                     .builder()
@@ -41,6 +47,7 @@ public class ScheduleMapper {
                     .destinationAirportResponse(destinationAirport.getData())
                     .dateTime(schedule.getDateTime().toString())
                     .seats(schedule.getSeats())
+                    .bookedSeats((int) bookedSeats)
                     .build();
         }
        return ScheduleResponse
@@ -49,8 +56,9 @@ public class ScheduleMapper {
                 .flightResponse(flightResponse.getData())
                 .sourceAirportResponse(sourceAirport.getData())
                 .destinationAirportResponse(destinationAirport.getData())
-               .dateTime(schedule.getDateTime().toString())
+                .dateTime(schedule.getDateTime().toString())
                 .seats(null)
+                .bookedSeats((int) bookedSeats)
                 .build();
 
     }

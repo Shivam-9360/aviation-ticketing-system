@@ -18,6 +18,5 @@ public class FlightResponse {
     private int flightNumber;
     private String company;
     private int totalSeats;
-    private int bookedSeats;
     private List<SeatType> seatType;
 }
