@@ -1,7 +1,23 @@
 # Auth Service Documentation
 
 ## Overview
-The Auth Service is responsible for handling user authentication and authorization in the aviation ticketing system. It provides JWT (JSON Web Token) based authentication and integrates with the User Service for user management.
+The Auth Service is responsible for handling user authentication and authorization in the aviation ticketing system. It provides JWT (JSON Web Token) based authentication and integrates with the User Service for user management. This service is a critical security component that ensures secure access to all other services in the system.
+
+## Architecture
+
+```mermaid
+graph TD
+    Client[Client Applications] --> API[API Gateway]
+    API --> Auth[Auth Service]
+    Auth --> User[User Service]
+    Auth --> Eureka[Eureka Server]
+    
+    classDef service fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef client fill:#fbb,stroke:#333,stroke-width:2px;
+    
+    class Client client;
+    class API,Auth,User,Eureka service;
+```
 
 ## Core Components
 
@@ -24,6 +40,37 @@ The Auth Service is responsible for handling user authentication and authorizati
     - GET `/api/user/email/{email}` - Retrieve user by email
     - POST `/api/user` - Create new user
 
+### 4. AuthController
+- REST controller for authentication operations
+- Endpoints:
+    - POST `/api/register` - Register a new user
+    - POST `/api/login` - Authenticate user and generate JWT token
+    - POST `/api/validate` - Validate JWT token
+
+## Data Model
+
+```mermaid
+erDiagram
+    AUTH_REQUEST {
+        string email
+        string password
+    }
+    
+    AUTH_RESPONSE {
+        string token
+        string email
+        string role
+    }
+    
+    REGISTER_REQUEST {
+        string name
+        string email
+        string password
+        string phone
+        string address
+    }
+```
+
 ## Dependencies
 - Spring Boot Starter Security
 - Spring Boot Starter Web
@@ -33,6 +80,15 @@ The Auth Service is responsible for handling user authentication and authorizati
     - jjwt-api
     - jjwt-impl
     - jjwt-jackson
+- Lombok
+- Spring Boot DevTools
+- Spring Boot Starter Test
+
+## Service Communication
+
+### Synchronous Communication (Feign Client)
+- **Auth Service → User Service**: Retrieves user details for authentication
+- **Auth Service → User Service**: Creates new user during registration
 
 ## Security Features
 - Implements Spring Security for authentication
@@ -40,16 +96,106 @@ The Auth Service is responsible for handling user authentication and authorizati
 - RSA-based token signing for enhanced security
 - Role-based access control
 - Integration with User Service for credential verification
+- Password encryption
+- Token expiration and refresh mechanism
+- Secure error handling
 
 ## Configuration
-- Requires JWT_PRIVATE_SECRET environment variable for token signing
-- Configured as Eureka client for service discovery
-- Uses Feign for inter-service communication
+- Server port: 9002
+- JWT configuration:
+  - Requires JWT_PRIVATE_SECRET environment variable for token signing
+  - Token expiration: 30 minutes
+  - Algorithm: RS256 (RSA with SHA-256)
+- Eureka client configuration
+- Feign client configuration
 
 ## Error Handling
-- Handles authentication failures
-- Manages user not found scenarios
-- Provides secure error responses
+- Authentication failures
+- User not found scenarios
+- Invalid token errors
+- Registration validation errors
+- Service communication errors
+- Secure error responses
+
+## Integration Points
+- User Service for user management
+- API Gateway for token validation
+- Service Registry for service discovery
+
+## Getting Started
+
+### Prerequisites
+- Java 17 or higher
+- Maven 3.6+
+- User Service running
+- Eureka Server running
+
+### Environment Variables
+```bash
+export JWT_PRIVATE_SECRET="your-private-key-here"
+```
+
+### Running the Service
+
+1. **Start the Eureka Server** first (if not already running)
+
+2. **Start the User Service** (required for authentication)
+
+3. **Start the Auth Service**:
+   ```bash
+   cd auth-service
+   mvn spring-boot:run
+   ```
+
+4. **Verify the service** is registered with Eureka at http://localhost:8761
+
+### Docker Deployment
+
+```bash
+docker build -t auth-service .
+docker run -p 9002:9002 -e JWT_PRIVATE_SECRET="your-private-key-here" auth-service
+```
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/register` | Register a new user |
+| POST | `/api/login` | Authenticate user and generate JWT token |
+| POST | `/api/validate` | Validate JWT token |
+
+## Authentication Flow
+
+1. **Registration**:
+   - Client sends registration request to Auth Service
+   - Auth Service validates request data
+   - Auth Service calls User Service to create new user
+   - Auth Service returns success response
+
+2. **Login**:
+   - Client sends login credentials to Auth Service
+   - Auth Service calls User Service to validate credentials
+   - Auth Service generates JWT token if credentials are valid
+   - Auth Service returns token to client
+
+3. **Token Validation**:
+   - Client includes JWT token in Authorization header
+   - API Gateway validates token with Auth Service
+   - If valid, request proceeds to target service
+   - If invalid, request is rejected
+
+## Testing
+
+The service includes comprehensive tests:
+- Unit tests for JWT service
+- Integration tests for authentication flow
+- Security tests for token validation
+
+Run tests with:
+```bash
+mvn test
+```
+
 # Spring Boot
 
 ### Reference Documentation

@@ -1,7 +1,26 @@
 # Airport Service Documentation
 
 ## Overview
-The Airport Service manages airport-related operations in the aviation ticketing system. It handles airport information management and coordinates with the Schedule Service for flight schedule management.
+The Airport Service manages airport-related operations in the aviation ticketing system. It handles airport information management and coordinates with the Flight Service for flight status updates. This service is responsible for maintaining airport data that is critical for flight scheduling and operations.
+
+## Architecture
+
+```mermaid
+graph TD
+    Client[Client Applications] --> API[API Gateway]
+    API --> Airport[Airport Service]
+    Airport --> MySQL[(MySQL)]
+    Airport --> Eureka[Eureka Server]
+    Airport -.->|RabbitMQ| Flight[Flight Service]
+    
+    classDef service fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef database fill:#bbf,stroke:#333,stroke-width:2px;
+    classDef client fill:#fbb,stroke:#333,stroke-width:2px;
+    
+    class Client client;
+    class API,Airport,Flight,Eureka service;
+    class MySQL database;
+```
 
 ## Core Components
 
@@ -18,52 +37,151 @@ The Airport Service manages airport-related operations in the aviation ticketing
 - Implements AirportService interface
 - Features:
     - Airport CRUD operations
-    - Integration with Schedule Service
+    - Integration with Flight Service
     - Data validation and error handling
     - Airport mapping between DTOs and entities
+    - RabbitMQ message publishing for airport status updates
 
-### 3. ScheduleServiceCommunicator (Feign Client)
-- Interfaces with Schedule Service
-- Operations:
-    - Delete schedules by airport ID
+### 3. AirportController
+- REST controller for airport operations
+- Endpoints:
+    - GET `/api/airports` - Get all airports
+    - GET `/api/airport/{id}` - Get airport by ID
+    - POST `/api/airport` - Create new airport
+    - PUT `/api/airport/{id}` - Update airport
+    - DELETE `/api/airport/{id}` - Delete airport
+
+### 4. RabbitMQ Message Publishers
+- Handles asynchronous airport status notifications
+- Components:
+    - Airport status message publisher
+    - Airport event models
+    - RabbitMQ configuration
 
 ## Data Model
-Airport entity includes:
-- Airport ID
-- Airport Name
-- Location details
-- Other airport-specific information
+
+```mermaid
+erDiagram
+    AIRPORT {
+        int id PK
+        string name
+        string city
+        string country
+        string code
+        string status
+        datetime created_at
+        datetime updated_at
+    }
+```
 
 ## Dependencies
 - Spring Boot Starter Web
 - Spring Cloud Netflix Eureka Client
-- Spring Cloud OpenFeign
 - Spring Data JPA
+- MySQL Connector
+- Spring AMQP (RabbitMQ)
 - Lombok
+- Spring Boot DevTools
+- Spring Boot Starter Test
+
+## Service Communication
+
+### Asynchronous Communication (RabbitMQ)
+- **Airport Service → Flight Service**: Sends airport status updates
 
 ## Features
 - Complete airport management system
-- Integration with Schedule Service
 - Data validation and error handling
 - Service discovery integration
 - DTO pattern for data transfer
+- Asynchronous airport status notifications
+- MySQL for relational airport data storage
 
 ## Error Handling
 - AirportDoesntExistException
 - CommunicationFailedException
 - Validation errors for invalid requests
+- Database connection errors
+- Message publishing errors
 
 ## Integration Points
-- Schedule Service for coordinated operations
+- Flight Service for status updates
 - Service Registry for service discovery
-- Database for airport data persistence
+- MySQL database for airport data persistence
+- RabbitMQ for asynchronous messaging
 
 ## Configuration
-- Database configuration
+- Server port: 9001
+- MySQL configuration:
+  - Connection settings
+  - JPA/Hibernate settings
 - Eureka client configuration
-- Feign client setup
-- Exception handling setup
-- Mapper configuration
+- RabbitMQ configuration:
+  - Exchange name: "airport-exchange"
+  - Routing key: "airport.status"
+  - Message converter settings
+  - Publisher confirms
+
+## Getting Started
+
+### Prerequisites
+- Java 17 or higher
+- Maven 3.6+
+- MySQL
+- RabbitMQ
+- Eureka Server running
+
+### Running the Service
+
+1. **Start the Eureka Server** first (if not already running)
+
+2. **Start MySQL and RabbitMQ**
+
+3. **Start the Airport Service**:
+   ```bash
+   cd airport-service
+   mvn spring-boot:run
+   ```
+
+4. **Verify the service** is registered with Eureka at http://localhost:8761
+
+### Docker Deployment
+
+```bash
+docker build -t airport-service .
+docker run -p 9001:9001 airport-service
+```
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/airports` | Get all airports |
+| GET | `/api/airport/{id}` | Get airport by ID |
+| POST | `/api/airport` | Create new airport |
+| PUT | `/api/airport/{id}` | Update airport |
+| DELETE | `/api/airport/{id}` | Delete airport |
+
+## Message Flow Example
+
+### Airport Status Update Flow:
+1. Admin updates airport status in Airport Service
+2. Airport Service publishes status change to RabbitMQ
+3. Flight Service consumes message and updates affected flights
+
+## Testing
+
+The service includes comprehensive tests:
+- Unit tests for service layer
+- Integration tests for controller layer
+- Repository tests for data access
+- Message publishing tests
+
+Run tests with:
+```bash
+mvn test
+```
+
 # Spring Boot
 
 ### Reference Documentation
