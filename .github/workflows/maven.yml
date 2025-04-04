@@ -48,4 +48,6 @@ jobs:
           context: ./${{ matrix.service }}
           file: ./${{ matrix.service }}/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:latest,${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:${{ github.sha }}
+          tags: |
+            programguru/aviation-ticketing-system:${{ matrix.service }}-latest
+            programguru/aviation-ticketing-system:${{ matrix.service }}-${{ github.sha }}
