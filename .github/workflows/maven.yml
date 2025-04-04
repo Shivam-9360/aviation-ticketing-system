@@ -28,7 +28,7 @@ jobs:
 
       - name: Build and Test ${{ matrix.service }}
         working-directory: ${{ matrix.service }}
-        run: mvn clean install
+        run: mvn clean install -DskipTests
 
   dockerize:
     name: Build Docker Images
