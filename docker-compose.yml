@@ -6,6 +6,8 @@ services:
       context: ./api-gateway
     ports:
       - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - eureka-server
       - auth-service
@@ -21,6 +23,8 @@ services:
       context: ./auth-service
     ports:
       - "9002:9002"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       - eureka-server
 
@@ -77,3 +81,8 @@ services:
       - "9006:9006"
     depends_on:
       - eureka-server
+
+networks:
+  default:
+    name: flight-booking-network
+    driver: bridge
