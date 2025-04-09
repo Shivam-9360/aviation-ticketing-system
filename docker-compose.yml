@@ -1,26 +1,27 @@
 version: '3.8'
 
 services:
-  api-gateway:
-    build:
-      context: ./api-gateway
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    depends_on:
-      - eureka-server
-      - auth-service
-      - flight-service
-      - airport-service
-      - user-service
-      - schedule-service
-      - payment-service
-      - booking-service
+#  api-gateway:
+#    build:
+#      context: ./api-gateway
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=docker
+#    depends_on:
+#      - eureka-server
+#      - auth-service
+#      - flight-service
+#      - airport-service
+#      - user-service
+#      - schedule-service
+#      - payment-service
+#      - booking-service
 
   auth-service:
     build:
       context: ./auth-service
+    container_name: auth-service
     ports:
       - "9002:9002"
     environment:
@@ -28,59 +29,60 @@ services:
     depends_on:
       - eureka-server
 
-  flight-service:
-    build:
-      context: ./flight-service
-    ports:
-      - "9003:9003"
-    depends_on:
-      - eureka-server
-
-  airport-service:
-    build:
-      context: ./airport-service
-    ports:
-      - "9001:9001"
-    depends_on:
-      - eureka-server
-
-  user-service:
-    build:
-      context: ./user-service
-    ports:
-      - "9000:9000"
-    depends_on:
-      - eureka-server
+#  flight-service:
+#    build:
+#      context: ./flight-service
+#    ports:
+#      - "9003:9003"
+#    depends_on:
+#      - eureka-server
+#
+#  airport-service:
+#    build:
+#      context: ./airport-service
+#    ports:
+#      - "9001:9001"
+#    depends_on:
+#      - eureka-server
+#
+#  user-service:
+#    build:
+#      context: ./user-service
+#    ports:
+#      - "9000:9000"
+#    depends_on:
+#      - eureka-server
 
   eureka-server:
     build:
       context: ./eureka-server
+    container_name: eureka-server
     ports:
       - "8761:8761"
 
-  schedule-service:
-    build:
-      context: ./schedule-service
-    ports:
-      - "9004:9004"
-    depends_on:
-      - eureka-server
-
-  payment-service:
-    build:
-      context: ./payment-service
-    ports:
-      - "9005:9005"
-    depends_on:
-      - eureka-server
-
-  booking-service:
-    build:
-      context: ./booking-service
-    ports:
-      - "9006:9006"
-    depends_on:
-      - eureka-server
+#  schedule-service:
+#    build:
+#      context: ./schedule-service
+#    ports:
+#      - "9004:9004"
+#    depends_on:
+#      - eureka-server
+#
+#  payment-service:
+#    build:
+#      context: ./payment-service
+#    ports:
+#      - "9005:9005"
+#    depends_on:
+#      - eureka-server
+#
+#  booking-service:
+#    build:
+#      context: ./booking-service
+#    ports:
+#      - "9006:9006"
+#    depends_on:
+#      - eureka-server
 
 networks:
   default:
