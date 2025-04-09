@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
 #  api-gateway:
 #    build:
@@ -44,14 +42,25 @@ services:
 #      - "9001:9001"
 #    depends_on:
 #      - eureka-server
+#      - mysql
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/airport-service
+#      - SPRING_DATASOURCE_USERNAME=root
+#      - SPRING_DATASOURCE_PASSWORD=rootpassword
 #
-#  user-service:
-#    build:
-#      context: ./user-service
-#    ports:
-#      - "9000:9000"
-#    depends_on:
-#      - eureka-server
+  user-service:
+    build:
+      context: ./user-service
+    container_name: user-service
+    ports:
+      - "9000:9000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
 
   eureka-server:
     build:
@@ -59,6 +68,12 @@ services:
     container_name: eureka-server
     ports:
       - "8761:8761"
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8761/eureka/" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
 #  schedule-service:
 #    build:
@@ -84,7 +99,28 @@ services:
 #    depends_on:
 #      - eureka-server
 
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=user-service
+      - MYSQL_ROOT_HOST=%
+    restart: always
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 networks:
   default:
     name: flight-booking-network
     driver: bridge
+
+volumes:
+  mysql-data:
