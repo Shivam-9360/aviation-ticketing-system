@@ -23,6 +23,10 @@ spring:
             - Path=/airport-service/**
           filters:
             - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
 
         - id: auth-service
           uri: lb://auth-service
@@ -30,6 +34,10 @@ spring:
             - Path=/auth-service/**
           filters:
             - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
 
         - id: flight-service
           uri: lb://flight-service
@@ -37,6 +45,10 @@ spring:
             - Path=/flight-service/**
           filters:
             - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
 
         - id: user-service
           uri: lb://user-service
@@ -44,13 +56,21 @@ spring:
             - Path=/user-service/**
           filters:
             - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
 
         - id: schedule-service
           uri: lb://schedule-service
           predicates:
             - Path=/schedule-service/**
           filters:
-              - StripPrefix=1
+            - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
 
         - id: booking-service
           uri: lb://booking-service
@@ -58,6 +78,10 @@ spring:
             - Path=/booking-service/**
           filters:
             - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
 
         - id: payment-service
           uri: lb://payment-service
@@ -65,7 +89,10 @@ spring:
             - Path=/payment-service/**
           filters:
             - StripPrefix=1
-
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
 server:
   port: 8080
 
@@ -80,3 +107,29 @@ eureka:
     instance-id: ${spring.application.name}:${server.port}
 
 JWT_PUBLIC_SECRET: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqfni37IKzokPkRjL6ekyGgwHiGcnLIAHhgoWddyraSRxNw4VfBNSFUaLxT9DMiNCwH614ALasV6WNJwtiPXwPVTb8U6fAdKASdK0zd9jZaQeGn2eU+u552g22OimrQGuqruTv16NLpEduTiPK4zM+RLm8jCqhZiZhwmiFfCyciPhBfYnBYQ7+pbldEYtw072mX3UZuzCNNtNF/IDnkoj4scA04MMmmhtjN4F+pyud4jksnrmaR8oJvC3lsLplL7minIacGlkfBA6wqfa3jz8EfEtgBYwWp6U/yoHTQ/9mt5bh/EHwxLIjs4cw67kRcTnrOQtH4N7uAoWiX9EqvIV2wIDAQAB"
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 20
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 5
+        failureRateThreshold: 50
+        slowCallRateThreshold: 100
+        slowCallDurationThreshold: 5s
+        waitDurationInOpenState: 2s
+        automatic-transition-from-open-to-half-open-enabled: true
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        recordExceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
+        ignoreExceptions:
+          - org.springframework.web.client.HttpClientErrorException$NotFound
+          - org.springframework.web.client.HttpClientErrorException$MethodNotAllowed
+    instances:
+      myCircuitBreaker:
+        baseConfig: default

@@ -18,6 +18,10 @@ spring:
             - Path=/airport-service/**
           filters:
             - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
 
         - id: auth-service
           uri: http://auth-service:9002
@@ -25,6 +29,10 @@ spring:
             - Path=/auth-service/**
           filters:
             - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
 
         - id: user-service
           uri: http://user-service:9000
@@ -32,6 +40,10 @@ spring:
             - Path=/user-service/**
           filters:
             - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
             
         - id: booking-service
           uri: http://booking-service:9005
@@ -39,6 +51,10 @@ spring:
             - Path=/booking-service/**
           filters:
             - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
 
         - id: flight-service
           uri: http://flight-service:9003
@@ -46,6 +62,10 @@ spring:
             - Path=/flight-service/**
           filters:
             - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
             
         - id: schedule-service
           uri: http://schedule-service:9004
@@ -53,13 +73,21 @@ spring:
             - Path=/schedule-service/**
           filters:
             - StripPrefix=1
-            
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
+
         - id: payment-service
           uri: http://payment-service:9006
           predicates:
             - Path=/payment-service/**
           filters:
             - StripPrefix=1
+            - name: CircuitBreaker
+              args:
+                name: myCircuitBreaker
+                fallbackUri: forward:/health/check
             
 eureka:
   client:
