@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "USER-SERVICE")
+@FeignClient(name = "USER-SERVICE", url = "${user.service.url:}")
 public interface UserServiceCommunication {
     @GetMapping("/api/user/email/{email}")
     public DTO<UserResponse> getUserByEmail(@PathVariable("email") String email);
