@@ -1,4 +1,70 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-service-websocket
+          uri: ws://user-service:9000
+          predicates:
+            - Path=/ws/user-updates
+
+        - id: schedule-service-websocket
+          uri: ws://schedule-service:9004
+          predicates:
+            - Path=/ws/seats/**
+
+        - id: airport-service
+          uri: http://airport-service:9001
+          predicates:
+            - Path=/airport-service/**
+          filters:
+            - StripPrefix=1
+
+        - id: auth-service
+          uri: http://auth-service:9002
+          predicates:
+            - Path=/auth-service/**
+          filters:
+            - StripPrefix=1
+
+        - id: user-service
+          uri: http://user-service:9000
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=1
+            
+        - id: booking-service
+          uri: http://booking-service:9005
+          predicates:
+            - Path=/api/bookings/**
+          filters:
+            - StripPrefix=1
+
+        - id: flight-service
+          uri: http://flight-service:9003
+          predicates:
+            - Path=/flight-service/**
+          filters:
+            - StripPrefix=1
+            
+        - id: schedule-service
+          uri: http://schedule-service:9004
+          predicates:
+            - Path=/api/schedules/**
+          filters:
+            - StripPrefix=1
+            
+        - id: payment-service
+          uri: http://payment-service:9006
+          predicates:
+            - Path=/api/payments/**
+          filters:
+            - StripPrefix=1
+            
 eureka:
   client:
     service-url:
       defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    hostname: api-gateway
