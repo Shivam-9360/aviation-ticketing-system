@@ -1,20 +1,28 @@
 services:
-#  api-gateway:
-#    build:
-#      context: ./api-gateway
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=docker
-#    depends_on:
-#      - eureka-server
-#      - auth-service
-#      - flight-service
-#      - airport-service
-#      - user-service
-#      - schedule-service
-#      - payment-service
-#      - booking-service
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - eureka-server
+      - auth-service
+      - flight-service
+      - airport-service
+      - user-service
+      - schedule-service
+      - payment-service
+      - booking-service
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
 
   auth-service:
     build:
@@ -27,27 +35,6 @@ services:
     depends_on:
       - eureka-server
 
-#  flight-service:
-#    build:
-#      context: ./flight-service
-#    ports:
-#      - "9003:9003"
-#    depends_on:
-#      - eureka-server
-#
-#  airport-service:
-#    build:
-#      context: ./airport-service
-#    ports:
-#      - "9001:9001"
-#    depends_on:
-#      - eureka-server
-#      - mysql
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/airport-service
-#      - SPRING_DATASOURCE_USERNAME=root
-#      - SPRING_DATASOURCE_PASSWORD=rootpassword
-#
   user-service:
     build:
       context: ./user-service
@@ -55,67 +42,104 @@ services:
     ports:
       - "9000:9000"
     depends_on:
-      mysql:
-        condition: service_healthy
-      eureka-server:
-        condition: service_started
+      - mysql
+      - eureka-server
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
-  eureka-server:
+  airport-service:
     build:
-      context: ./eureka-server
-    container_name: eureka-server
+      context: ./airport-service
+    container_name: airport-service
     ports:
-      - "8761:8761"
-    healthcheck:
-      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8761/eureka/" ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
+      - "9001:9001"
+    depends_on:
+      - eureka-server
+      - mysql
+      - rabbitmq
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
 
-#  schedule-service:
-#    build:
-#      context: ./schedule-service
-#    ports:
-#      - "9004:9004"
-#    depends_on:
-#      - eureka-server
-#
-#  payment-service:
-#    build:
-#      context: ./payment-service
-#    ports:
-#      - "9005:9005"
-#    depends_on:
-#      - eureka-server
-#
-#  booking-service:
-#    build:
-#      context: ./booking-service
-#    ports:
-#      - "9006:9006"
-#    depends_on:
-#      - eureka-server
+  flight-service:
+    build:
+      context: ./flight-service
+    container_name: flight-service
+    ports:
+      - "9003:9003"
+    depends_on:
+      - eureka-server
+      - mongodb
+      - rabbitmq
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  schedule-service:
+    build:
+      context: ./schedule-service
+    container_name: schedule-service
+    ports:
+      - "9004:9004"
+    depends_on:
+      - eureka-server
+      - mongodb
+      - rabbitmq
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  booking-service:
+    build:
+      context: ./booking-service
+    container_name: booking-service
+    ports:
+      - "9006:9006"
+    depends_on:
+      - eureka-server
+      - mongodb
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  payment-service:
+    build:
+      context: ./payment-service
+    container_name: payment-service
+    ports:
+      - "9005:9005"
+    depends_on:
+      - eureka-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
 
   mysql:
     image: mysql:8.0
     container_name: mysql
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=user-service
       - MYSQL_ROOT_HOST=%
-    restart: always
     ports:
       - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - ./sql-init:/docker-entrypoint-initdb.d
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"  # AMQP protocol port
+      - "15672:15672"  # Management UI port
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
 
 networks:
   default:
@@ -124,3 +148,5 @@ networks:
 
 volumes:
   mysql-data:
+  mongo-data:
+  rabbitmq-data:
