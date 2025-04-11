@@ -109,6 +109,14 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
 
+  onboard-app:
+    image: aadityarmall/aviation-ticketing-system:on-board-latest
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_RAZORPAY_KEY_ID = rzp_test_x0joxYG34sLh5M
+      - NEXT_PUBLIC_API_URL = http://api-gateway:8080
+
   mysql:
     image: mysql:8.0
     container_name: mysql
