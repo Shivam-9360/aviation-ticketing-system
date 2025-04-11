@@ -3,6 +3,11 @@ spring:
     url: "jdbc:mysql://mysql:3306/airport-service"
     username: "root"
     password: "root"
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
 
 eureka:
   client:

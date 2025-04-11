@@ -6,7 +6,7 @@ import com.flight.booking.dto.PaymentResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(name = "payment-service")
+@FeignClient(name = "payment-service", url = "${payment.service.url:}")
 public interface PaymentServiceCommunicator {
     @PostMapping("/api/order")
     public DTO<PaymentResponse> getOrderId(PaymentRequest paymentRequest);

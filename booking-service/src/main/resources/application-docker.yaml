@@ -4,6 +4,13 @@ spring:
       uri: "mongodb://mongodb:27017/booking-service"
       database: "booking-service"
 
+payment:
+  service:
+    url: http://payment-service:9006
+schedule:
+    service:
+        url: http://schedule-service:9004
+
 eureka:
   client:
     service-url:

@@ -5,7 +5,7 @@ import com.flight.booking.dto.DTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(name = "schedule-service")
+@FeignClient(name = "schedule-service", url = "${schedule.service.url:}")
 public interface ScheduleServiceCommunicator {
     @PostMapping("/api/validate-booking")
     DTO<String> validateBookingRequest(BookingRequest bookingRequest);

@@ -3,6 +3,11 @@ spring:
     mongodb:
       uri: "mongodb://mongodb:27017/flight-service"
       database: "flight-service"
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
 
 eureka:
   client:
