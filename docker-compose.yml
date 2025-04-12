@@ -1,7 +1,6 @@
 services:
   api-gateway:
-    build:
-      context: ./api-gateway
+    image: programguru/aviation-ticketing-system:api-gateway-latest
     container_name: api-gateway
     ports:
       - "8080:8080"
@@ -18,15 +17,13 @@ services:
       - booking-service
 
   eureka-server:
-    build:
-      context: ./eureka-server
+    image: programguru/aviation-ticketing-system:eureka-server-latest
     container_name: eureka-server
     ports:
       - "8761:8761"
 
   auth-service:
-    build:
-      context: ./auth-service
+    image: programguru/aviation-ticketing-system:auth-service-latest
     container_name: auth-service
     ports:
       - "9002:9002"
@@ -36,8 +33,7 @@ services:
       - eureka-server
 
   user-service:
-    build:
-      context: ./user-service
+    image: programguru/aviation-ticketing-system:user-service-latest
     container_name: user-service
     ports:
       - "9000:9000"
@@ -48,8 +44,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
 
   airport-service:
-    build:
-      context: ./airport-service
+    image: programguru/aviation-ticketing-system:airport-service-latest
     container_name: airport-service
     ports:
       - "9001:9001"
@@ -61,8 +56,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
 
   flight-service:
-    build:
-      context: ./flight-service
+    image: programguru/aviation-ticketing-system:flight-service-latest
     container_name: flight-service
     ports:
       - "9003:9003"
@@ -74,8 +68,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
 
   schedule-service:
-    build:
-      context: ./schedule-service
+    image: programguru/aviation-ticketing-system:schedule-service-latest
     container_name: schedule-service
     ports:
       - "9004:9004"
@@ -87,8 +80,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
 
   booking-service:
-    build:
-      context: ./booking-service
+    image: programguru/aviation-ticketing-system:booking-service-latest
     container_name: booking-service
     ports:
       - "9006:9006"
@@ -99,8 +91,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
 
   payment-service:
-    build:
-      context: ./payment-service
+    image: programguru/aviation-ticketing-system:payment-service-latest
     container_name: payment-service
     ports:
       - "9005:9005"
